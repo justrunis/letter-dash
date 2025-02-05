@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Button } from "react-native";
 import Board from "../components/Game/Board";
 import Keyboard from "../components/Game/Keyboard";
 import GameOverModal from "../components/Game/GameOverModal";
@@ -38,6 +38,18 @@ export default function GameScreen({ navigation }) {
     restart();
   };
 
+  const fetchNewWord = () => {
+    // Check if the game is over and the target word has not been guessed
+    const hasGuessedCorrectly = guesses.some(
+      (guess) => guess.word === targetWord
+    );
+    if (!hasGuessedCorrectly && isGameOver) {
+      restart();
+    }
+  };
+
+  const closeModal = () => {};
+
   return (
     <View style={styles.container}>
       <Board
@@ -46,7 +58,13 @@ export default function GameScreen({ navigation }) {
         maxAttempts={maxAttempts}
         wordLength={wordLength}
       />
-      <Keyboard onKeyPress={handleKeyPress} />
+      <Keyboard onKeyPress={handleKeyPress} onReset={fetchNewWord} />
+      {isGameOver && (
+        <View>
+          <Button title="Restart" onPress={restart} />
+        </View>
+      )}
+
       <GameOverModal
         visible={isGameOver}
         won={guesses.some((guess) => guess.word === targetWord)}

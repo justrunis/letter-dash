@@ -16,9 +16,9 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary500,
     backgroundColor: Colors.accent500,
     borderRadius: 5,
-    padding: 10,
+    padding: 9,
     margin: 3,
-    minWidth: 30,
+    minWidth: 20,
     alignItems: "center",
   },
   label: {

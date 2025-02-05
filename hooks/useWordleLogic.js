@@ -7,12 +7,11 @@ export default function useWordleLogic() {
   const maxAttempts = MAX_TRIES;
   const [targetWord, setTargetWord] = useState("");
   const [wordLength, setWordLength] = useState(0);
-  const [guesses, setGuesses] = useState([]); // each guess: { word, evaluation }
+  const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState("");
   const [startTime, setStartTime] = useState(Date.now());
   const [endTime, setEndTime] = useState(null);
 
-  // Function to fetch a random word from the API
   const fetchRandomWord = async () => {
     try {
       const response = await fetch(
@@ -44,14 +43,13 @@ export default function useWordleLogic() {
     const targetArr = targetWord.split("");
     const guessArr = guess.split("");
 
-    // First pass: correct letters (right letter, right position)
     guessArr.forEach((letter, i) => {
       if (letter === targetArr[i]) {
         result[i] = "correct";
         targetArr[i] = null; // mark as used
       }
     });
-    // Second pass: present letters (right letter, wrong position)
+
     guessArr.forEach((letter, i) => {
       if (result[i] !== "correct" && targetArr.includes(letter)) {
         result[i] = "present";
@@ -108,7 +106,6 @@ export default function useWordleLogic() {
 
     const evaluation = evaluateGuess(currentGuess);
     setGuesses((prev) => [...prev, { word: currentGuess, evaluation }]);
-    // Record end time when the target word is guessed
     if (currentGuess === targetWord && !endTime) {
       setEndTime(Date.now());
     }
@@ -119,15 +116,14 @@ export default function useWordleLogic() {
     guesses.some((guess) => guess.word === targetWord) ||
     guesses.length >= maxAttempts;
 
-  // Compute game metrics if the game is won
   const gameWon = guesses.some((guess) => guess.word === targetWord);
   const attemptsCount = gameWon ? guesses.length : null;
   const timeTaken = endTime ? (endTime - startTime) / 1000 : null; // in seconds
 
-  // Compute score: base 1000 points minus penalties (100 per attempt and 10 per second)
+  // Compute score: base 1000 points minus penalties (100 per attempt and 1 per second)
   const rawScore =
     gameWon && attemptsCount && timeTaken
-      ? 1000 - attemptsCount * 100 - timeTaken * 10
+      ? 1000 - attemptsCount * 100 - timeTaken * 1
       : 0;
   const score = rawScore < 0 ? 0 : Math.floor(rawScore);
 
@@ -138,6 +134,7 @@ export default function useWordleLogic() {
     deleteLetter,
     submitGuess,
     restart,
+    fetchRandomWord,
     isGameOver, // whether the game is over
     targetWord, // the target word
     maxAttempts, // maximum number of attempts

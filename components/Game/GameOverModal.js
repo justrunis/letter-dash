@@ -38,7 +38,7 @@ export default function GameOverModal({
               onPress={onRestart}
               color={Colors.accent500}
             />
-            <Button title="Exit" onPress={onClose} color={Colors.error} />
+            <Button title="Close" onPress={onClose} color={Colors.error} />
           </View>
         </View>
       </View>

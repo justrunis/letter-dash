@@ -2,22 +2,24 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import Board from "../components/Game/Board";
 import Keyboard from "../components/Game/Keyboard";
-import GameOverModal from "../components/Game/Modal";
+import GameOverModal from "../components/Game/GameOverModal";
 import useWordleLogic from "../hooks/useWordleLogic";
 
-export default function GameScreen() {
+export default function GameScreen({ navigation }) {
   const {
     guesses,
     currentGuess,
-    isValidWord,
     addLetter,
     deleteLetter,
     submitGuess,
-    reset,
+    restart,
     isGameOver,
     targetWord,
     maxAttempts,
     wordLength,
+    attemptsCount,
+    timeTaken,
+    score,
   } = useWordleLogic();
 
   const handleKeyPress = (key) => {
@@ -29,6 +31,11 @@ export default function GameScreen() {
     } else {
       addLetter(key.toLowerCase());
     }
+  };
+
+  const restartGame = () => {
+    navigation.navigate("Home");
+    restart();
   };
 
   return (
@@ -43,11 +50,13 @@ export default function GameScreen() {
       <GameOverModal
         visible={isGameOver}
         won={guesses.some((guess) => guess.word === targetWord)}
-        onRestart={() => {
-          reset();
-        }}
+        onRestart={restart}
+        onClose={restartGame}
+        attempts={attemptsCount}
+        timeTaken={timeTaken}
+        score={score}
+        targetWord={targetWord}
       />
-      <GameOverModal visible={!isValidWord} won={false} reset />
     </View>
   );
 }

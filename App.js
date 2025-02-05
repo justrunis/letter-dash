@@ -5,12 +5,14 @@ import GameScreen from "./screens/GameScreen";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "./constants/colors";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import ToastManager from "toastify-react-native";
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
+      <ToastManager placement="top" />
       <Tab.Navigator
         screenOptions={{
           headerStyle: {

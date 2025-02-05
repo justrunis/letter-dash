@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet } from "react-native";
+import { Colors } from "../../constants/colors";
 
 export default function LetterBox({ letter, evaluation }) {
   let backgroundColor = "#ddd"; // default (empty)
 
-  if (evaluation === "correct") backgroundColor = "green";
-  else if (evaluation === "present") backgroundColor = "gold";
-  else if (evaluation === "absent") backgroundColor = "gray";
+  if (evaluation === "correct") backgroundColor = Colors.correct;
+  else if (evaluation === "present") backgroundColor = Colors.present;
+  else if (evaluation === "absent") backgroundColor = Colors.absent;
 
   return (
     <View style={[styles.box, { backgroundColor }]}>

@@ -8,4 +8,9 @@ export const Colors = {
   primary800: "#004d40", // Very dark teal
   accent500: "#ffb74d", // Muted orange
   gray700: "#37474f", // Dark gray
+  correct: "#2ea04f", // Green
+  present: "#ffc300", // Yellow
+  absent: "#808080", // Gray
+  text: "#000000", // Black
+  error: "#ff0000", // Red
 };

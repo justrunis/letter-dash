@@ -41,6 +41,6 @@ export default function Board({
 
 const styles = StyleSheet.create({
   board: {
-    marginVertical: 20,
+    marginBottom: 20,
   },
 });

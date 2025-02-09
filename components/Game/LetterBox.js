@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
   box: {
     borderWidth: 2,
     borderColor: "#999",
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     margin: 2,
     justifyContent: "center",
     alignItems: "center",

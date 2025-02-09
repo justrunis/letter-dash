@@ -11,6 +11,7 @@ export const Colors = {
   correct: "#2ea04f", // Green
   present: "#ffc300", // Yellow
   absent: "#808080", // Gray
+  defaultKey: "#ffffff", // White
   text: "#000000", // Black
   error: "#ff0000", // Red
 };

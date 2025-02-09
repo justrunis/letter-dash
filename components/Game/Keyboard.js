@@ -1,19 +1,24 @@
-import { View, StyleSheet, ScrollView, Button } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import Key from "./Key";
 import { KEYS_LAYOUT } from "../../constants/constants";
-import { Colors } from "../../constants/colors";
 
-export default function Keyboard({ onKeyPress }) {
+export default function Keyboard({ onKeyPress, keyEvaluations }) {
   return (
-    <ScrollView contentContainerStyle={styles.keyboard}>
+    <View style={styles.keyboard}>
       {KEYS_LAYOUT.map((row, rowIndex) => (
         <View key={rowIndex} style={styles.row}>
           {row.map((key) => (
-            <Key key={key} label={key} onPress={() => onKeyPress(key)} />
+            <Key
+              key={key}
+              label={key}
+              onPress={() => onKeyPress(key)}
+              evaluation={keyEvaluations[key.toLowerCase()]}
+            />
           ))}
         </View>
       ))}
-    </ScrollView>
+    </View>
   );
 }
 

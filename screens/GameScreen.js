@@ -4,6 +4,7 @@ import Board from "../components/Game/Board";
 import Keyboard from "../components/Game/Keyboard";
 import GameOverModal from "../components/Game/GameOverModal";
 import useWordleLogic from "../hooks/useWordleLogic";
+import { Colors } from "../constants/colors";
 
 export default function GameScreen({ navigation }) {
   const {
@@ -20,6 +21,7 @@ export default function GameScreen({ navigation }) {
     attemptsCount,
     timeTaken,
     score,
+    keyEvaluations,
   } = useWordleLogic();
 
   const handleKeyPress = (key) => {
@@ -58,12 +60,10 @@ export default function GameScreen({ navigation }) {
         maxAttempts={maxAttempts}
         wordLength={wordLength}
       />
-      <Keyboard onKeyPress={handleKeyPress} onReset={fetchNewWord} />
-      {isGameOver && (
-        <View>
-          <Button title="Restart" onPress={restart} />
-        </View>
-      )}
+      <Keyboard
+        onKeyPress={handleKeyPress}
+        keyEvaluations={keyEvaluations} // Pass keyEvaluations here
+      />
 
       <GameOverModal
         visible={isGameOver}
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
+    justifyContent: "space-around",
+    backgroundColor: Colors.primary100,
   },
 });

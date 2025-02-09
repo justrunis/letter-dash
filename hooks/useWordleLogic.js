@@ -11,6 +11,25 @@ export default function useWordleLogic() {
   const [currentGuess, setCurrentGuess] = useState("");
   const [startTime, setStartTime] = useState(Date.now());
   const [endTime, setEndTime] = useState(null);
+  const [keyEvaluations, setKeyEvaluations] = useState({});
+
+  const updateKeyEvaluations = (guess, evaluation) => {
+    setKeyEvaluations((prevEvaluations) => {
+      const newEvaluations = { ...prevEvaluations };
+      guess.split("").forEach((letter, index) => {
+        const evalStatus = evaluation[index];
+        if (
+          evalStatus === "correct" ||
+          (evalStatus === "present" && newEvaluations[letter] !== "correct")
+        ) {
+          newEvaluations[letter] = evalStatus;
+        } else if (!newEvaluations[letter]) {
+          newEvaluations[letter] = "absent";
+        }
+      });
+      return newEvaluations;
+    });
+  };
 
   const fetchRandomWord = async () => {
     try {
@@ -18,7 +37,7 @@ export default function useWordleLogic() {
         `https://random-word-api.vercel.app/api?words=1&length=${WORD_LENGTH}`
       );
       const data = await response.json();
-      console.log(data + ":DATA");
+      console.log("The word is: " + data);
       if (data && data.length > 0) {
         const word = data[0].toLowerCase();
         setTargetWord(word);
@@ -56,6 +75,17 @@ export default function useWordleLogic() {
         targetArr[targetArr.indexOf(letter)] = null;
       }
     });
+
+    setKeyEvaluations((prev) => {
+      const newEvaluations = { ...prev };
+      guessArr.forEach((letter, i) => {
+        if (newEvaluations[letter] !== "correct") {
+          newEvaluations[letter] = result[i];
+        }
+      });
+      return newEvaluations;
+    });
+
     return result;
   };
 
@@ -86,6 +116,7 @@ export default function useWordleLogic() {
   const restart = () => {
     setGuesses([]);
     setCurrentGuess("");
+    setKeyEvaluations({});
     setEndTime(null);
     setStartTime(Date.now());
     fetchRandomWord();
@@ -106,6 +137,7 @@ export default function useWordleLogic() {
 
     const evaluation = evaluateGuess(currentGuess);
     setGuesses((prev) => [...prev, { word: currentGuess, evaluation }]);
+    updateKeyEvaluations(currentGuess, evaluation);
     if (currentGuess === targetWord && !endTime) {
       setEndTime(Date.now());
     }
@@ -142,5 +174,6 @@ export default function useWordleLogic() {
     attemptsCount, // number of attempts when game is won
     timeTaken, // time taken in seconds when game is won
     score, // computed score based on attempts and speed
+    keyEvaluations,
   };
 }

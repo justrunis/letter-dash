@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { Colors } from "../../constants/colors";
 
 export default function LetterBox({ letter, evaluation }) {
-  let backgroundColor = "#ddd"; // default (empty)
+  let backgroundColor = Colors.gray;
 
   if (evaluation === "correct") backgroundColor = Colors.correct;
   else if (evaluation === "present") backgroundColor = Colors.present;
@@ -18,7 +18,7 @@ export default function LetterBox({ letter, evaluation }) {
 const styles = StyleSheet.create({
   box: {
     borderWidth: 2,
-    borderColor: "#999",
+    borderColor: Colors.grayBorder,
     width: 50,
     height: 50,
     margin: 2,

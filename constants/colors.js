@@ -12,6 +12,8 @@ export const Colors = {
   present: "#ffc300", // Yellow
   absent: "#808080", // Gray
   defaultKey: "#ffffff", // White
+  gray: "#dddddd", // Gray
+  grayBorder: "#999999", // Gray border
   text: "#000000", // Black
   error: "#ff0000", // Red
 };

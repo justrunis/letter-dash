@@ -40,18 +40,6 @@ export default function GameScreen({ navigation }) {
     restart();
   };
 
-  const fetchNewWord = () => {
-    // Check if the game is over and the target word has not been guessed
-    const hasGuessedCorrectly = guesses.some(
-      (guess) => guess.word === targetWord
-    );
-    if (!hasGuessedCorrectly && isGameOver) {
-      restart();
-    }
-  };
-
-  const closeModal = () => {};
-
   return (
     <View style={styles.container}>
       <Board
@@ -60,11 +48,7 @@ export default function GameScreen({ navigation }) {
         maxAttempts={maxAttempts}
         wordLength={wordLength}
       />
-      <Keyboard
-        onKeyPress={handleKeyPress}
-        keyEvaluations={keyEvaluations} // Pass keyEvaluations here
-      />
-
+      <Keyboard onKeyPress={handleKeyPress} keyEvaluations={keyEvaluations} />
       <GameOverModal
         visible={isGameOver}
         won={guesses.some((guess) => guess.word === targetWord)}
@@ -82,7 +66,7 @@ export default function GameScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
+    paddingTop: 30,
     alignItems: "center",
     justifyContent: "space-around",
     backgroundColor: Colors.primary100,

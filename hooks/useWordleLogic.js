@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Toast } from "toastify-react-native";
 import { MAX_TRIES, WORD_LENGTH } from "../constants/constants";
 
-export default function useWordleLogic() {
+export default function useWordleLogic(dailyWord) {
   const maxAttempts = MAX_TRIES;
   const [targetWord, setTargetWord] = useState("");
   const [wordLength, setWordLength] = useState(0);
@@ -12,6 +12,7 @@ export default function useWordleLogic() {
   const [startTime, setStartTime] = useState(Date.now());
   const [endTime, setEndTime] = useState(null);
   const [keyEvaluations, setKeyEvaluations] = useState({});
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const updateKeyEvaluations = (guess, evaluation) => {
     setKeyEvaluations((prevEvaluations) => {
@@ -53,7 +54,12 @@ export default function useWordleLogic() {
 
   // Fetch a random word on mount
   useEffect(() => {
-    fetchRandomWord();
+    if (dailyWord) {
+      setTargetWord(dailyWord);
+      setWordLength(dailyWord.length);
+    } else {
+      fetchRandomWord();
+    }
     setStartTime(Date.now());
   }, []);
 
@@ -119,6 +125,7 @@ export default function useWordleLogic() {
     setKeyEvaluations({});
     setEndTime(null);
     setStartTime(Date.now());
+    setIsGameOver(false);
     fetchRandomWord();
   };
 
@@ -139,14 +146,11 @@ export default function useWordleLogic() {
     setGuesses((prev) => [...prev, { word: currentGuess, evaluation }]);
     updateKeyEvaluations(currentGuess, evaluation);
     if (currentGuess === targetWord && !endTime) {
+      setIsGameOver(true);
       setEndTime(Date.now());
     }
     setCurrentGuess("");
   };
-
-  const isGameOver =
-    guesses.some((guess) => guess.word === targetWord) ||
-    guesses.length >= maxAttempts;
 
   const gameWon = guesses.some((guess) => guess.word === targetWord);
   const attemptsCount = gameWon ? guesses.length : null;

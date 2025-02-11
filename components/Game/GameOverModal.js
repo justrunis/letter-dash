@@ -4,6 +4,7 @@ import { Colors } from "../../constants/colors";
 
 export default function GameOverModal({
   visible,
+  showRestart = true,
   onRestart,
   onClose,
   won,
@@ -33,11 +34,13 @@ export default function GameOverModal({
             </Text>
           )}
           <View style={styles.buttonContainer}>
-            <Button
-              title="Restart"
-              onPress={onRestart}
-              color={Colors.accent500}
-            />
+            {showRestart && (
+              <Button
+                title="Restart"
+                onPress={onRestart}
+                color={Colors.accent500}
+              />
+            )}
             <Button title="Close" onPress={onClose} color={Colors.error} />
           </View>
         </View>

@@ -13,22 +13,31 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to Letter-Box!</Text>
-      <Text style={styles.description}>
-        In Letter-Box, your goal is to guess the hidden word within a limited
-        number of tries. Each guess provides clues:
-      </Text>
-      {clues.map((clue, index) => (
-        <ClueRow
-          key={index}
-          indicatorColor={clue.color}
-          description={clue.text}
+      <View>
+        <Text style={styles.description}>
+          In Letter-Box, your goal is to guess the hidden word within a limited
+          number of tries. Each guess provides clues:
+        </Text>
+        {clues.map((clue, index) => (
+          <ClueRow
+            key={index}
+            indicatorColor={clue.color}
+            description={clue.text}
+          />
+        ))}
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Game"
+          onPress={() => navigation.navigate("Game")}
+          color={Colors.primary500}
         />
-      ))}
-      <Button
-        title="Go to Game"
-        onPress={() => navigation.navigate("Game")}
-        color={Colors.primary500}
-      />
+        <Button
+          title="Daily Game"
+          onPress={() => navigation.navigate("DailyGame")}
+          color={Colors.primary500}
+        />
+      </View>
     </View>
   );
 }
@@ -37,9 +46,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.primary100,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "start",
+    justifyContent: "space-evenly",
     padding: 20,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 20,
+    width: "100%",
   },
   title: {
     fontSize: 28,
@@ -51,7 +66,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     color: Colors.text,
-    textAlign: "center",
+    textAlign: "start",
     marginBottom: 20,
   },
   clueContainer: {

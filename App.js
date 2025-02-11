@@ -1,4 +1,3 @@
-import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "./constants/colors";
@@ -8,6 +7,8 @@ import ToastManager from "toastify-react-native";
 import HomeScreen from "./screens/HomeScreen";
 import GameScreen from "./screens/GameScreen";
 import DailyGameScreen from "./screens/DailyGameScreen";
+import LeaderboardScreen from "./screens/LeaderboardScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -58,16 +59,27 @@ export default function App() {
             ),
           }}
         />
+        <Drawer.Screen
+          name="Leaderboard"
+          component={LeaderboardScreen}
+          options={{
+            title: "Leaderboard",
+            drawerIcon: ({ color, size }) => (
+              <Ionicons name="list" color={color} size={size} />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            title: "Profile",
+            drawerIcon: ({ color, size }) => (
+              <Ionicons name="person" color={color} size={size} />
+            ),
+          }}
+        />
       </Drawer.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.primary100,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

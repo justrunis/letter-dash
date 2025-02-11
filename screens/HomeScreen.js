@@ -12,7 +12,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Letter-Box!</Text>
+      <Text style={styles.title}>Welcome to Letter Box!</Text>
       <View>
         <Text style={styles.description}>
           In Letter-Box, your goal is to guess the hidden word within a limited

@@ -6,6 +6,7 @@ const authSlice = createSlice({
     isAuthenticated: false,
     userToken: null,
     email: null,
+    username: null,
     password: null,
     isRegistered: false,
   },
@@ -14,6 +15,7 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.userToken = action.payload.userToken;
       state.email = action.payload.email;
+      state.username = action.payload.username;
       state.password = action.payload.password;
     },
     register: (state, action) => {
@@ -23,6 +25,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.userToken = null;
       state.email = null;
+      state.username = null;
       state.password = null;
       state.isRegistered = false;
     },

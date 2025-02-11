@@ -2,16 +2,19 @@ import React, { useState } from "react";
 import { View, Text, Button, TextInput, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { login, register, logout } from "../store/slices/authSlice";
+import { Colors } from "../constants/colors";
+import { Toast } from "toastify-react-native";
 
 export default function ProfileScreen() {
   const [formData, setFormData] = useState({
+    username: "",
     email: "",
     password: "",
     passwordRepeat: "",
   });
   const [isRegistering, setIsRegistering] = useState(false);
   const dispatch = useDispatch();
-  const { isAuthenticated, email, isRegistered } = useSelector(
+  const { isAuthenticated, email, username, isRegistered } = useSelector(
     (state) => state.auth
   );
 
@@ -20,8 +23,11 @@ export default function ProfileScreen() {
   };
 
   const handleLogin = () => {
+    // call to API
     const userToken = "dummy-token";
     dispatch(login({ userToken, ...formData }));
+    Toast.success("Login successful!");
+    setFormData({});
   };
 
   const handleLogout = () => {
@@ -29,19 +35,24 @@ export default function ProfileScreen() {
   };
 
   const handleRegister = () => {
+    // call to API
     dispatch(register({ formData }));
+    Toast.success("Registration successful!");
+    setFormData({});
   };
 
-  const toggleRegistration = () => {
+  const toggle = () => {
     setIsRegistering((prev) => !prev);
-    setFormData({ email: "", password: "" });
+    setFormData({ username: "", email: "", password: "", passwordRepeat: "" });
   };
 
   return (
     <View style={styles.container}>
       {isAuthenticated ? (
         <>
-          <Text>Welcome back! {email}</Text>
+          <Text>
+            Welcome back! {email}/{username}
+          </Text>
           <Button title="Logout" onPress={handleLogout} />
         </>
       ) : (
@@ -52,6 +63,14 @@ export default function ProfileScreen() {
             onChangeText={(value) => handleInputChange("email", value)}
             style={styles.input}
           />
+          {isRegistering && (
+            <TextInput
+              placeholder="Username"
+              value={formData.username}
+              onChangeText={(value) => handleInputChange("username", value)}
+              style={styles.input}
+            />
+          )}
           <TextInput
             placeholder="Password"
             value={formData.password}
@@ -74,10 +93,12 @@ export default function ProfileScreen() {
             <Button
               title={isRegistering ? "Register" : "Login"}
               onPress={isRegistering ? handleRegister : handleLogin}
+              color={Colors.primary500}
             />
             <Button
               title={isRegistering ? "Switch to Login" : "Switch to Register"}
-              onPress={toggleRegistration}
+              onPress={toggle}
+              color={Colors.primary500}
             />
           </View>
         </>
@@ -97,6 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
     width: "100%",
+    marginVertical: 10,
   },
   input: {
     width: "80%",

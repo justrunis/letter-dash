@@ -135,17 +135,21 @@ export default function useWordleLogic(dailyWord) {
       return;
     }
 
-    const isValid = await checkWordValidity(currentGuess);
-    if (!isValid) {
-      Toast.error(`The word ${currentGuess} doesn't exist.`);
-      setCurrentGuess("");
-      return;
-    }
+    // const isValid = await checkWordValidity(currentGuess);
+    // if (!isValid) {
+    //   Toast.error(`The word ${currentGuess} doesn't exist.`);
+    //   setCurrentGuess("");
+    //   return;
+    // }
 
     const evaluation = evaluateGuess(currentGuess);
     setGuesses((prev) => [...prev, { word: currentGuess, evaluation }]);
     updateKeyEvaluations(currentGuess, evaluation);
     if (currentGuess === targetWord && !endTime) {
+      setIsGameOver(true);
+      setEndTime(Date.now());
+    }
+    if (guesses.length === maxAttempts - 1) {
       setIsGameOver(true);
       setEndTime(Date.now());
     }

@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { View, StyleSheet, Button } from "react-native";
 import Board from "../components/Game/Board";
 import Keyboard from "../components/Game/Keyboard";
@@ -35,11 +35,6 @@ export default function GameScreen({ navigation }) {
     }
   };
 
-  const restartGame = () => {
-    navigation.navigate("Home");
-    restart();
-  };
-
   return (
     <View style={styles.container}>
       <Board
@@ -48,17 +43,19 @@ export default function GameScreen({ navigation }) {
         maxAttempts={maxAttempts}
         wordLength={wordLength}
       />
-      <Keyboard onKeyPress={handleKeyPress} keyEvaluations={keyEvaluations} />
-      <GameOverModal
-        visible={isGameOver}
-        won={guesses.some((guess) => guess.word === targetWord)}
-        onRestart={restart}
-        onClose={restartGame}
-        attempts={attemptsCount}
-        timeTaken={timeTaken}
-        score={score}
-        targetWord={targetWord}
-      />
+      {isGameOver ? (
+        <GameOverModal
+          visible={isGameOver}
+          won={guesses.some((guess) => guess.word === targetWord)}
+          onRestart={restart}
+          attempts={attemptsCount}
+          timeTaken={timeTaken}
+          score={score}
+          targetWord={targetWord}
+        />
+      ) : (
+        <Keyboard onKeyPress={handleKeyPress} keyEvaluations={keyEvaluations} />
+      )}
     </View>
   );
 }

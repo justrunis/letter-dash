@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, Text, Button, StyleSheet, ScrollView } from "react-native";
 import { Colors } from "../constants/colors";
 import ClueRow from "../components/Home/ClueRow";
 
@@ -11,13 +11,13 @@ export default function HomeScreen({ navigation }) {
   ];
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Welcome to Letter Box!</Text>
+      <Text style={styles.description}>
+        In Letter Box, your goal is to guess the hidden five-letter word within
+        six attempts. Each guess provides feedback:
+      </Text>
       <View>
-        <Text style={styles.description}>
-          In Letter-Box, your goal is to guess the hidden word within a limited
-          number of tries. Each guess provides clues:
-        </Text>
         {clues.map((clue, index) => (
           <ClueRow
             key={index}
@@ -26,19 +26,27 @@ export default function HomeScreen({ navigation }) {
           />
         ))}
       </View>
+      <Text style={styles.sectionTitle}>Tips and Strategies</Text>
+      <Text style={styles.description}>
+        - Start with a word that includes common vowels and consonants to
+        maximize information from your first guess.{"\n"}- Pay attention to the
+        color feedback to deduce letter positions and exclusions.{"\n"}- Avoid
+        repeating letters that have been marked as absent.{"\n"}- Practice
+        regularly to improve your word-guessing skills.
+      </Text>
+      <Text style={styles.sectionTitle}>Daily Challenges</Text>
+      <Text style={styles.description}>
+        Play daily puzzles and unlock achievements to track your progress.
+      </Text>
       <View style={styles.buttonContainer}>
         <Button
-          title="Game"
-          onPress={() => navigation.navigate("Game")}
-          color={Colors.primary500}
-        />
-        <Button
-          title="Daily Game"
-          onPress={() => navigation.navigate("DailyGame")}
-          color={Colors.primary500}
+          title="Start Game"
+          onPress={() => {
+            navigation.navigate("Game");
+          }}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -46,15 +54,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.primary100,
-    alignItems: "start",
-    justifyContent: "space-evenly",
     padding: 20,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 20,
-    width: "100%",
   },
   title: {
     fontSize: 28,
@@ -66,26 +66,16 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     color: Colors.text,
-    textAlign: "start",
     marginBottom: 20,
   },
-  clueContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignContent: "center",
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: Colors.primary700,
     marginBottom: 10,
   },
-  clue: {
-    width: 30,
-    height: 30,
-    borderRadius: 5,
-    textAlign: "center",
-    textAlignVertical: "center",
-    color: Colors.text,
-    marginRight: 10,
-  },
-  clueText: {
-    fontSize: 16,
-    color: Colors.text,
+  buttonContainer: {
+    marginTop: 20,
+    alignItems: "center",
   },
 });

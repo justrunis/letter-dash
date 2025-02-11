@@ -82,3 +82,46 @@ export const TEMP_LEADERBOARD = [
     score: 170,
   },
 ];
+
+export const ALL_ACHIEVEMENTS = [
+  {
+    title: "Letter Novice",
+    description: "Complete your first Letter Dash puzzle.",
+    icon: "game-controller-outline",
+  },
+  {
+    title: "Streak Master",
+    description: "Achieve a 7-day winning streak.",
+    icon: "star-outline",
+  },
+  {
+    title: "Perfect Score",
+    description: "Solve a puzzle in 3 guesses or less.",
+    icon: "checkmark-circle",
+  },
+  {
+    title: "Daily Dedication",
+    description: "Play and solve the daily puzzle for 30 consecutive days.",
+    icon: "flame-outline",
+  },
+  {
+    title: "Vocabulary Virtuoso",
+    description: "Solve 100 puzzles correctly.",
+    icon: "book",
+  },
+  {
+    title: "Quick Thinker",
+    description: "Solve a puzzle in under 2 minutes.",
+    icon: "speedometer",
+  },
+  {
+    title: "Word Sleuth",
+    description: "Solve a puzzle without any incorrect guesses.",
+    icon: "search",
+  },
+  {
+    title: "Letter Enthusiast",
+    description: "Play 500 puzzles.",
+    icon: "heart",
+  },
+];

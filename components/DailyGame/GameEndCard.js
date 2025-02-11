@@ -1,13 +1,27 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/colors";
 
 export default function GameEndCard({ attemptsCount, timeTaken, score }) {
+  const isSuccess = attemptsCount !== null;
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Game Over</Text>
-      <Text style={styles.text}>You guessed the daily word!</Text>
-      <Text style={styles.text}>Attempts: {attemptsCount}</Text>
+      <Text style={styles.title}>
+        {isSuccess ? "Congratulations!" : "Game Over!"}
+      </Text>
+      <Ionicons
+        name={isSuccess ? "checkmark-circle" : "close-circle"}
+        size={50}
+        color={isSuccess ? Colors.correct : Colors.error}
+        style={styles.icon}
+      />
+      <Text style={styles.text}>
+        {isSuccess
+          ? `You guessed the daily word in ${attemptsCount} attempts!`
+          : "You did not guess the daily word :("}
+      </Text>
       <Text style={styles.text}>Time Taken: {timeTaken.toFixed(1)}s</Text>
       <Text style={styles.text}>Score: {score}</Text>
     </View>
@@ -22,14 +36,17 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "bold",
-    color: Colors.primary700,
+    color: Colors.text,
+    marginBottom: 10,
+  },
+  icon: {
     marginBottom: 20,
   },
   text: {
-    fontSize: 18,
-    color: Colors.primary700,
-    marginBottom: 10,
+    fontSize: 16,
+    color: Colors.text,
+    textAlign: "center",
   },
 });

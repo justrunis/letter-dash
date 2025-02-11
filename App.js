@@ -12,6 +12,7 @@ import GameScreen from "./screens/GameScreen";
 import DailyGameScreen from "./screens/DailyGameScreen";
 import LeaderboardScreen from "./screens/LeaderboardScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import AchievementsScreen from "./screens/AchievementsScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -81,6 +82,16 @@ export default function App() {
                 title: "Profile",
                 drawerIcon: ({ color, size }) => (
                   <Ionicons name="person" color={color} size={size} />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="Achievements"
+              component={AchievementsScreen}
+              options={{
+                title: "Achievements",
+                drawerIcon: ({ color, size }) => (
+                  <Ionicons name="trophy" color={color} size={size} />
                 ),
               }}
             />

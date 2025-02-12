@@ -12,13 +12,18 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import authReducer from "./slices/authSlice";
+import dailyGuessSlice from "./slices/dailyGuessSlice";
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
 };
 
-const persistedReducer = persistReducer(persistConfig, authReducer);
+const persistedReducer = persistReducer(
+  persistConfig,
+  authReducer,
+  dailyGuessSlice
+);
 
 const store = configureStore({
   reducer: {

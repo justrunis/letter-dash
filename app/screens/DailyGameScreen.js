@@ -9,36 +9,8 @@ import { Toast } from "toastify-react-native";
 import { useEffect, useState } from "react";
 
 export default function DailyGameScreen({ navigation }) {
-  const [dailyWord, setDailyWord] = useState(null);
+  const dailyWord = true;
   const token = useSelector((state) => state.auth.userToken);
-
-  useEffect(() => {
-    const getDailyWord = async () => {
-      try {
-        const URL = process.env.EXPO_PUBLIC_API_URL + "/daily-challenge";
-        const response = await fetch(URL, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          const data = await response.json();
-          Toast.error(data.message);
-          return;
-        }
-        const data = await response.json();
-        setDailyWord(data.word);
-      } catch (error) {
-        Toast.error("Failed to fetch the daily word.");
-      }
-    };
-
-    if (token) {
-      getDailyWord();
-    }
-  }, [token]);
 
   const {
     guesses,
@@ -70,14 +42,6 @@ export default function DailyGameScreen({ navigation }) {
     return (
       <View style={styles.centeredContainer}>
         <Text style={styles.message}>Please login to play the daily game.</Text>
-      </View>
-    );
-  }
-
-  if (!dailyWord) {
-    return (
-      <View style={styles.centeredContainer}>
-        <Text style={styles.message}>Loading daily word...</Text>
       </View>
     );
   }

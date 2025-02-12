@@ -1,7 +1,7 @@
-// /src/hooks/useWordleLogic.js
 import { useState, useEffect } from "react";
 import { Toast } from "toastify-react-native";
 import { MAX_TRIES, WORD_LENGTH } from "../constants/constants";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function useWordleLogic(dailyWord) {
   const maxAttempts = MAX_TRIES;
@@ -13,6 +13,8 @@ export default function useWordleLogic(dailyWord) {
   const [endTime, setEndTime] = useState(null);
   const [keyEvaluations, setKeyEvaluations] = useState({});
   const [isGameOver, setIsGameOver] = useState(false);
+
+  const token = useSelector((state) => state.auth.userToken);
 
   const updateKeyEvaluations = (guess, evaluation) => {
     setKeyEvaluations((prevEvaluations) => {
@@ -30,6 +32,30 @@ export default function useWordleLogic(dailyWord) {
       });
       return newEvaluations;
     });
+  };
+
+  const getDailyWord = async () => {
+    try {
+      const URL = process.env.EXPO_PUBLIC_API_URL + "/daily-challenge";
+      const response = await fetch(URL, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        Toast.error(data.message);
+        return;
+      }
+      const data = await response.json();
+      console.log("The daily word is: " + data.word);
+      setTargetWord(data.word);
+      setWordLength(data.word.length);
+    } catch (error) {
+      Toast.error("Failed to fetch the daily word.");
+    }
   };
 
   const fetchRandomWord = async () => {
@@ -55,8 +81,8 @@ export default function useWordleLogic(dailyWord) {
   // Fetch a random word on mount
   useEffect(() => {
     if (dailyWord) {
-      setTargetWord(dailyWord);
-      setWordLength(dailyWord.length);
+      getDailyWord();
+      getUsersTodayGuesses();
     } else {
       fetchRandomWord();
     }
@@ -129,18 +155,75 @@ export default function useWordleLogic(dailyWord) {
     fetchRandomWord();
   };
 
+  const postGuess = async (guess) => {
+    const URL = process.env.EXPO_PUBLIC_API_URL + "/guess";
+    console.log(URL);
+    const response = await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ word: guess }),
+    });
+    console.log(await response.json());
+    if (!response.ok) {
+      const data = await response.json();
+      Toast.error(data.message);
+      return;
+    }
+    const data = await response.json();
+    console.log(data);
+  };
+
+  const getUsersTodayGuesses = async () => {
+    const URL = process.env.EXPO_PUBLIC_API_URL + "/guess";
+    try {
+      const response = await fetch(URL, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        Toast.error(data.message);
+        return;
+      }
+
+      const data = await response.json();
+      console.log(data);
+
+      const formattedGuesses = data.guesses.map((guess) => ({
+        word: guess.word,
+        evaluation: evaluateGuess(guess.word),
+      }));
+
+      setGuesses(formattedGuesses);
+    } catch (error) {
+      console.error("Error fetching user's guesses:", error);
+      Toast.error("Failed to fetch user's guesses.");
+    }
+  };
+
   const submitGuess = async () => {
     if (currentGuess.length !== wordLength) {
       Toast.error("Please enter a valid word.");
       return;
     }
 
-    // const isValid = await checkWordValidity(currentGuess);
-    // if (!isValid) {
-    //   Toast.error(`The word ${currentGuess} doesn't exist.`);
-    //   setCurrentGuess("");
-    //   return;
-    // }
+    const isValid = await checkWordValidity(currentGuess);
+    if (!isValid) {
+      Toast.error(`The word ${currentGuess} doesn't exist.`);
+      setCurrentGuess("");
+      return;
+    }
+
+    if (dailyWord) {
+      postGuess(currentGuess);
+    }
 
     const evaluation = evaluateGuess(currentGuess);
     setGuesses((prev) => [...prev, { word: currentGuess, evaluation }]);

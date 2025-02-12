@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { login, register, logout } from "../store/slices/authSlice";
 import { Colors } from "../constants/colors";
 import { Toast } from "toastify-react-native";
+import { getUserUsername } from "../auth/auth";
+import ProfileCard from "../components/Profile/ProfileCard";
 
 export default function ProfileScreen() {
   const [formData, setFormData] = useState({
@@ -14,19 +16,29 @@ export default function ProfileScreen() {
   });
   const [isRegistering, setIsRegistering] = useState(false);
   const dispatch = useDispatch();
-  const { isAuthenticated, email, username, isRegistered } = useSelector(
-    (state) => state.auth
-  );
+  const { isAuthenticated, email, username, isRegistered, userToken } =
+    useSelector((state) => state.auth);
 
   const handleInputChange = (name, value) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleLogin = () => {
-    // call to API
-    const userToken = "dummy-token";
-    dispatch(login({ userToken, ...formData }));
-    Toast.success("Login successful!");
+  const handleLogin = async () => {
+    const URL = process.env.EXPO_PUBLIC_API_URL + "/auth/login";
+    const response = await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      Toast.error(data.message);
+      return;
+    }
+    dispatch(login({ userToken: data.token, ...formData }));
+    Toast.success(data.message);
     setFormData({});
   };
 
@@ -34,10 +46,22 @@ export default function ProfileScreen() {
     dispatch(logout());
   };
 
-  const handleRegister = () => {
-    // call to API
+  const handleRegister = async () => {
+    const URL = process.env.EXPO_PUBLIC_API_URL + "/auth/register";
+    const response = await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      Toast.error(data.message);
+      return;
+    }
     dispatch(register({ formData }));
-    Toast.success("Registration successful!");
+    Toast.success(data.message);
     setFormData({});
   };
 
@@ -49,28 +73,25 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       {isAuthenticated ? (
-        <>
-          <Text>
-            Welcome back! {email}/{username}
-          </Text>
-          <Button title="Logout" onPress={handleLogout} />
-        </>
+        <View style={styles.profileContainer}>
+          <ProfileCard onLogout={handleLogout} />
+        </View>
       ) : (
         <>
-          <TextInput
-            placeholder="Email"
-            value={formData.email}
-            onChangeText={(value) => handleInputChange("email", value)}
-            style={styles.input}
-          />
           {isRegistering && (
             <TextInput
-              placeholder="Username"
-              value={formData.username}
-              onChangeText={(value) => handleInputChange("username", value)}
+              placeholder="Email"
+              value={formData.email}
+              onChangeText={(value) => handleInputChange("email", value)}
               style={styles.input}
             />
           )}
+          <TextInput
+            placeholder="Username"
+            value={formData.username}
+            onChangeText={(value) => handleInputChange("username", value)}
+            style={styles.input}
+          />
           <TextInput
             placeholder="Password"
             value={formData.password}
@@ -118,6 +139,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
     width: "100%",
+    marginVertical: 10,
+  },
+  profileContainer: {
+    alignItems: "center",
+    justifyContent: "center",
     marginVertical: 10,
   },
   input: {

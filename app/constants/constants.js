@@ -1,5 +1,7 @@
 export const MAX_TRIES = 6;
 export const WORD_LENGTH = 5;
+export const DEFAULT_AVATAR_IMAGE =
+  "https://t4.ftcdn.net/jpg/02/15/84/43/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg";
 export const KEYS_LAYOUT = [
   ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
   ["A", "S", "D", "F", "G", "H", "J", "K", "L"],

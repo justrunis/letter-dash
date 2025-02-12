@@ -1,7 +1,6 @@
 import { View, StyleSheet, Text } from "react-native";
 import Board from "../components/Game/Board";
 import Keyboard from "../components/Game/Keyboard";
-import GameOverModal from "../components/Game/GameOverModal";
 import useWordleLogic from "../hooks/useWordleLogic";
 import { Colors } from "../constants/colors";
 import GameEndCard from "../components/DailyGame/GameEndCard";

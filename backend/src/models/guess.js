@@ -14,18 +14,17 @@ const guessSchema = new Schema(
       ref: "DailyChallenge",
       required: true,
     },
-    word: {
-      type: String,
-      required: true,
-      trim: true,
+    score: {
+      type: Number,
+      default: 0,
     },
-    isCorrect: {
-      type: Boolean,
-      default: false,
+    timeTaken: {
+      type: Number,
+      default: 0,
     },
-    timestamp: {
-      type: Date,
-      default: Date.now,
+    attemptsTaken: {
+      type: Number,
+      default: 1,
     },
   },
   { timestamps: true }

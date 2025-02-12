@@ -4,9 +4,41 @@ import Keyboard from "../components/Game/Keyboard";
 import useWordleLogic from "../hooks/useWordleLogic";
 import { Colors } from "../constants/colors";
 import GameEndCard from "../components/DailyGame/GameEndCard";
+import { useSelector } from "react-redux";
+import { Toast } from "toastify-react-native";
+import { useEffect, useState } from "react";
 
 export default function DailyGameScreen({ navigation }) {
-  const dailyWord = "hello";
+  const [dailyWord, setDailyWord] = useState(null);
+  const token = useSelector((state) => state.auth.userToken);
+
+  useEffect(() => {
+    const getDailyWord = async () => {
+      try {
+        const URL = process.env.EXPO_PUBLIC_API_URL + "/daily-challenge";
+        const response = await fetch(URL, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          const data = await response.json();
+          Toast.error(data.message);
+          return;
+        }
+        const data = await response.json();
+        setDailyWord(data.word);
+      } catch (error) {
+        Toast.error("Failed to fetch the daily word.");
+      }
+    };
+
+    if (token) {
+      getDailyWord();
+    }
+  }, [token]);
 
   const {
     guesses,
@@ -15,7 +47,6 @@ export default function DailyGameScreen({ navigation }) {
     deleteLetter,
     submitGuess,
     isGameOver,
-    targetWord,
     maxAttempts,
     wordLength,
     attemptsCount,
@@ -35,9 +66,21 @@ export default function DailyGameScreen({ navigation }) {
     }
   };
 
-  const close = () => {
-    navigation.navigate("Home");
-  };
+  if (!token) {
+    return (
+      <View style={styles.centeredContainer}>
+        <Text style={styles.message}>Please login to play the daily game.</Text>
+      </View>
+    );
+  }
+
+  if (!dailyWord) {
+    return (
+      <View style={styles.centeredContainer}>
+        <Text style={styles.message}>Loading daily word...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -67,5 +110,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     backgroundColor: Colors.primary100,
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  message: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: Colors.text,
   },
 });

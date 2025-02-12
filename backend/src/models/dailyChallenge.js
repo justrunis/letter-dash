@@ -14,12 +14,6 @@ const dailyChallengeSchema = new Schema(
       required: true,
       trim: true,
     },
-    hints: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
   },
   { timestamps: true }
 );

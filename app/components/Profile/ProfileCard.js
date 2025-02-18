@@ -102,7 +102,7 @@ export default function ProfileCard({ onLogout }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.accent500,
     padding: 20,
     marginVertical: 10,
     borderRadius: 10,

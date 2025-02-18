@@ -19,11 +19,11 @@ export default function AchievementCard({ title, description, icon }) {
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
-    backgroundColor: "#fff",
+    backgroundColor: Colors.primary200,
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,
-    shadowColor: "#000",
+    shadowColor: Colors.primary800,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,

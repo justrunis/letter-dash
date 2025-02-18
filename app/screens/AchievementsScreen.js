@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import AchievementCard from "../components/Achievements/AchievementCard";
 import { ALL_ACHIEVEMENTS } from "../constants/constants";
+import { Colors } from "../constants/colors";
 
 export default function AchievementsScreen() {
   return (
@@ -25,7 +26,7 @@ export default function AchievementsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.primary100,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -39,6 +40,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginVertical: 20,
   },
 });

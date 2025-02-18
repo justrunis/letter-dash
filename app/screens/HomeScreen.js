@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, Button, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  ScrollView,
+  Image,
+} from "react-native";
 import { Colors } from "../constants/colors";
 import ClueRow from "../components/Home/ClueRow";
 
@@ -12,11 +19,15 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Welcome to Letter Box!</Text>
+      <Text style={styles.title}>Welcome to Letter Dash!</Text>
+      <View style={styles.imageContainer}>
+        <Image source={require("../assets/icon.png")} style={styles.image} />
+      </View>
       <Text style={styles.description}>
-        In Letter Box, your goal is to guess the hidden five-letter word within
+        In Letter Dash, your goal is to guess the hidden five-letter word within
         six attempts. Each guess provides feedback:
       </Text>
+
       <View>
         {clues.map((clue, index) => (
           <ClueRow
@@ -54,7 +65,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.primary100,
+    paddingBottom: 40,
     padding: 20,
+  },
+  imageContainer: {
+    alignItems: "center",
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    marginBottom: 20,
+    aspectRatio: 3 / 2,
+    resizeMode: "contain",
   },
   title: {
     fontSize: 28,
@@ -75,7 +97,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonContainer: {
-    marginTop: 20,
+    marginBottom: 40,
     alignItems: "center",
   },
 });

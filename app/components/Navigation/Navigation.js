@@ -1,3 +1,9 @@
+import { View, Text, StyleSheet, Image } from "react-native";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/colors";
@@ -8,22 +14,30 @@ import DailyGameScreen from "../../screens/DailyGameScreen";
 import LeaderboardScreen from "../../screens/LeaderboardScreen";
 import ProfileScreen from "../../screens/ProfileScreen";
 import AchievementsScreen from "../../screens/AchievementsScreen";
+import { DEFAULT_AVATAR_IMAGE } from "../../constants/constants";
+import { useSelector } from "react-redux";
 
-export default function Navigation({ Drawer }) {
+export default function Navigation() {
+  const Drawer = createDrawerNavigator();
+
   return (
     <NavigationContainer>
       <ToastManager placement="top" />
       <Drawer.Navigator
+        drawerContent={(props) => <CustomDrawerContent {...props} />}
         screenOptions={{
+          drawerActiveTintColor: Colors.primary500,
+          drawerInactiveTintColor: Colors.primary800,
           headerStyle: {
             backgroundColor: Colors.primary500,
           },
-          headerTintColor: Colors.gray700,
+          headerTintColor: Colors.primary800,
           tabBarStyle: {
             backgroundColor: Colors.primary500,
           },
-          tabBarActiveTintColor: Colors.accent500,
-          tabBarInactiveTintColor: Colors.gray700,
+          drawerStyle: {
+            backgroundColor: Colors.primary100,
+          },
         }}
       >
         <Drawer.Screen
@@ -90,3 +104,55 @@ export default function Navigation({ Drawer }) {
     </NavigationContainer>
   );
 }
+
+function CustomDrawerContent(props) {
+  const token = useSelector((state) => state.auth.userToken);
+  const username = useSelector((state) => state.auth.username);
+  return (
+    <DrawerContentScrollView {...props}>
+      {token && (
+        <View style={styles.drawerHeader}>
+          <Text style={styles.drawerHeaderText}>Welcome to Letter Dash!</Text>
+
+          <View style={styles.container}>
+            <Image
+              source={{
+                uri: DEFAULT_AVATAR_IMAGE,
+              }}
+              style={styles.image}
+            />
+            <Text style={styles.text}>{username}</Text>
+          </View>
+        </View>
+      )}
+      <DrawerItemList {...props} />
+    </DrawerContentScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    gap: 10,
+  },
+  text: {
+    fontSize: 16,
+    color: Colors.accent500,
+  },
+  drawerHeader: {
+    padding: 20,
+    backgroundColor: Colors.primary500,
+    alignItems: "center",
+  },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  drawerHeaderText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: Colors.accent500,
+    marginBottom: 10,
+  },
+});

@@ -164,7 +164,6 @@ export default function useWordleLogic(dailyWord) {
   };
 
   const checkWordValidity = async (word) => {
-    return true;
     const URL = "https://api.dictionaryapi.dev/api/v2/entries/en/" + word;
     try {
       const response = await fetch(URL);

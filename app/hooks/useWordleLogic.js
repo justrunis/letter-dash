@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 export default function useWordleLogic(dailyWord) {
   const maxAttempts = MAX_TRIES;
   const [targetWord, setTargetWord] = useState("");
-  const [wordLength, setWordLength] = useState(0);
+  const wordLength = targetWord.length;
   const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState("");
   const [startTime, setStartTime] = useState(Date.now());
@@ -52,7 +52,7 @@ export default function useWordleLogic(dailyWord) {
       const data = await response.json();
       console.log("The daily word is: " + data.word);
       setTargetWord(data.word);
-      setWordLength(data.word.length);
+      // setWordLength(data.word.length);
     } catch (error) {
       Toast.error("Failed to fetch the daily word.");
     }
@@ -68,26 +68,59 @@ export default function useWordleLogic(dailyWord) {
       if (data && data.length > 0) {
         const word = data[0].toLowerCase();
         setTargetWord(word);
-        setWordLength(word.length);
+        // setWordLength(word.length);
       }
     } catch (error) {
-      console.error("Error fetching random word:", error);
       // Fallback word in case of an error
       setTargetWord("donut");
-      setWordLength("donut".length);
+      // setWordLength("donut".length);
     }
   };
 
-  // Fetch a random word on mount
-  useEffect(() => {
-    if (dailyWord) {
-      getDailyWord();
-      getUsersTodayGuesses();
-    } else {
-      fetchRandomWord();
+  const refreshDailyGame = async () => {
+    try {
+      const allGuesses = await getUsersTodayGuesses();
+      await evaluateGuesses(allGuesses);
+      await getDailyWord();
+    } catch (error) {
+      console.error("Error refreshing daily game:", error);
     }
-    setStartTime(Date.now());
-  }, []);
+  };
+
+  useEffect(() => {
+    setKeyEvaluations({});
+    const fetchDataAndEvaluate = async () => {
+      if (dailyWord) {
+        if (token) {
+          await getDailyWord();
+        }
+      } else {
+        if (!dailyWord && !targetWord) {
+          await fetchRandomWord();
+        }
+      }
+      setStartTime(Date.now());
+    };
+
+    fetchDataAndEvaluate();
+  }, [token]);
+
+  useEffect(() => {
+    const evaluateGameState = async () => {
+      if (dailyWord && targetWord && wordLength && token) {
+        const allGuesses = await getUsersTodayGuesses();
+        const latestGuess = allGuesses[allGuesses.length - 1].word;
+        if (latestGuess == targetWord) {
+          setIsGameOver(true);
+        }
+        if (allGuesses.length >= maxAttempts) {
+          setIsGameOver(true);
+        }
+        await evaluateGuesses(allGuesses);
+      }
+    };
+    evaluateGameState();
+  }, [targetWord, wordLength, token]);
 
   const evaluateGuess = (guess) => {
     const result = Array(wordLength).fill("absent");
@@ -121,7 +154,17 @@ export default function useWordleLogic(dailyWord) {
     return result;
   };
 
+  const evaluateGuesses = async (guesses) => {
+    const results = [];
+    for (let i = 0; i < guesses.length; i++) {
+      results.push(evaluateGuess(guesses[i].word));
+      updateKeyEvaluations(guesses[i].word, results[i]);
+    }
+    return results;
+  };
+
   const checkWordValidity = async (word) => {
+    return true;
     const URL = "https://api.dictionaryapi.dev/api/v2/entries/en/" + word;
     try {
       const response = await fetch(URL);
@@ -157,7 +200,6 @@ export default function useWordleLogic(dailyWord) {
 
   const postGuess = async (guess) => {
     const URL = process.env.EXPO_PUBLIC_API_URL + "/guess";
-    console.log(URL);
     const response = await fetch(URL, {
       method: "POST",
       headers: {
@@ -166,14 +208,12 @@ export default function useWordleLogic(dailyWord) {
       },
       body: JSON.stringify({ word: guess }),
     });
-    console.log(await response.json());
     if (!response.ok) {
       const data = await response.json();
       Toast.error(data.message);
       return;
     }
     const data = await response.json();
-    console.log(data);
   };
 
   const getUsersTodayGuesses = async () => {
@@ -190,21 +230,30 @@ export default function useWordleLogic(dailyWord) {
       if (!response.ok) {
         const data = await response.json();
         Toast.error(data.message);
-        return;
+        return [];
       }
 
       const data = await response.json();
-      console.log(data);
+
+      if (data.guesses.length == 0) {
+        setGuesses([]);
+        setKeyEvaluations({});
+        return [];
+      }
 
       const formattedGuesses = data.guesses.map((guess) => ({
         word: guess.word,
         evaluation: evaluateGuess(guess.word),
       }));
+      const latestGuess = formattedGuesses[formattedGuesses.length - 1].word;
+      if (latestGuess == targetWord) {
+        setIsGameOver(true);
+      }
 
       setGuesses(formattedGuesses);
+      return formattedGuesses;
     } catch (error) {
       console.error("Error fetching user's guesses:", error);
-      Toast.error("Failed to fetch user's guesses.");
     }
   };
 
@@ -258,6 +307,7 @@ export default function useWordleLogic(dailyWord) {
     submitGuess,
     restart,
     fetchRandomWord,
+    refreshDailyGame,
     isGameOver, // whether the game is over
     targetWord, // the target word
     maxAttempts, // maximum number of attempts

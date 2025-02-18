@@ -1,16 +1,24 @@
-import { View, StyleSheet, Text } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  Button,
+  RefreshControl,
+  DevSettings,
+} from "react-native";
 import Board from "../components/Game/Board";
 import Keyboard from "../components/Game/Keyboard";
 import useWordleLogic from "../hooks/useWordleLogic";
 import { Colors } from "../constants/colors";
 import GameEndCard from "../components/DailyGame/GameEndCard";
 import { useSelector } from "react-redux";
-import { Toast } from "toastify-react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 export default function DailyGameScreen({ navigation }) {
   const dailyWord = true;
   const token = useSelector((state) => state.auth.userToken);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const {
     guesses,
@@ -18,14 +26,25 @@ export default function DailyGameScreen({ navigation }) {
     addLetter,
     deleteLetter,
     submitGuess,
+    refreshDailyGame,
     isGameOver,
     maxAttempts,
     wordLength,
     attemptsCount,
     timeTaken,
+    targetWord,
     score,
     keyEvaluations,
-  } = useWordleLogic(dailyWord);
+  } = useWordleLogic(dailyWord); // targetWord, guesses
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refreshDailyGame();
+    DevSettings.reload();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   const handleKeyPress = (key) => {
     if (isGameOver) return;
@@ -40,14 +59,30 @@ export default function DailyGameScreen({ navigation }) {
 
   if (!token) {
     return (
-      <View style={styles.centeredContainer}>
+      <ScrollView
+        contentContainerStyle={styles.centeredContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <Text style={styles.message}>Please login to play the daily game.</Text>
-      </View>
+        <Button
+          title="Login"
+          onPress={() => {
+            navigation.navigate("Profile");
+          }}
+        />
+      </ScrollView>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <Board
         guesses={guesses}
         currentGuess={currentGuess}
@@ -59,11 +94,12 @@ export default function DailyGameScreen({ navigation }) {
           attemptsCount={attemptsCount}
           timeTaken={timeTaken}
           score={score}
+          targetWord={targetWord}
         />
       ) : (
         <Keyboard onKeyPress={handleKeyPress} keyEvaluations={keyEvaluations} />
       )}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -79,6 +115,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    gap: 10,
   },
   message: {
     fontSize: 20,

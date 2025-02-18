@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { View, Text, Button, TextInput, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { login, register, logout } from "../store/slices/authSlice";
+import { resetDailyGuesses } from "../store/slices/dailyGuessSlice";
 import { Colors } from "../constants/colors";
 import { Toast } from "toastify-react-native";
-import { getUserUsername } from "../auth/auth";
 import ProfileCard from "../components/Profile/ProfileCard";
 
 export default function ProfileScreen() {
@@ -38,6 +38,7 @@ export default function ProfileScreen() {
       return;
     }
     dispatch(login({ userToken: data.token, ...formData }));
+    dispatch(resetDailyGuesses());
     Toast.success(data.message);
     setFormData({});
   };

@@ -7,8 +7,6 @@ export const submitGuess = async (req, res, next) => {
     const userId = req.user.id;
     const { word } = req.body;
 
-    console.log(word);
-
     if (!word || typeof word !== "string") {
       return res.status(400).json({ message: "Invalid word input." });
     }

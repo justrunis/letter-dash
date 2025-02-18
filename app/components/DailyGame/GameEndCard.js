@@ -3,7 +3,12 @@ import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/colors";
 
-export default function GameEndCard({ attemptsCount, timeTaken, score }) {
+export default function GameEndCard({
+  attemptsCount,
+  timeTaken,
+  score,
+  targetWord,
+}) {
   const isSuccess = attemptsCount !== null;
 
   return (
@@ -19,11 +24,9 @@ export default function GameEndCard({ attemptsCount, timeTaken, score }) {
       />
       <Text style={styles.text}>
         {isSuccess
-          ? `You guessed the daily word in ${attemptsCount} attempts!`
-          : "You did not guess the daily word :("}
+          ? `You guessed the daily word in ${attemptsCount} attempt(s)!`
+          : `You did not guess the daily word ${targetWord} :(`}
       </Text>
-      <Text style={styles.text}>Time Taken: {timeTaken.toFixed(1)}s</Text>
-      <Text style={styles.text}>Score: {score}</Text>
     </View>
   );
 }

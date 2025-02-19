@@ -10,6 +10,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import dailyChallengeRoutes from "./routes/dailyChallengeRoutes.js";
 import guessRoutes from "./routes/guessRoutes.js";
+import leaderboardRoutes from "./routes/leaderboardRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/daily-challenge", dailyChallengeRoutes);
 app.use("/guess", guessRoutes);
+app.use("/leaderboard", leaderboardRoutes);
 
 async function createDailyChallenges() {
   try {

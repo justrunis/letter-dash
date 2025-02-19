@@ -19,7 +19,6 @@ export default function ProfileCard({ onLogout }) {
   const [userData, setUserData] = useState({
     username: "",
     email: "",
-    totalScore: 0,
     dayStreak: 0,
     createdAt: "",
     updatedAt: "",
@@ -37,11 +36,26 @@ export default function ProfileCard({ onLogout }) {
     });
     const data = await response.json();
 
+    const URL2 = process.env.EXPO_PUBLIC_API_URL + "/leaderboard/profile";
+    const response2 = await fetch(URL2, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data2 = await response2.json();
+    const dayStreak = data2.user.dayStreak;
+
     if (!response.ok) {
       Toast.error(data.message);
       return;
     }
-    setUserData(data);
+    setUserData(data2.user);
+    setUserData((prevUserData) => ({
+      ...prevUserData,
+      dayStreak: dayStreak,
+    }));
   }
 
   useEffect(() => {
@@ -64,10 +78,6 @@ export default function ProfileCard({ onLogout }) {
       <View style={styles.infoRow}>
         <Ionicons name="mail-outline" size={20} color="black" />
         <Text style={styles.infoText}>{userData.email}</Text>
-      </View>
-      <View style={styles.infoRow}>
-        <Ionicons name="trophy-outline" size={20} color="black" />
-        <Text style={styles.infoText}>Total Score: {userData.totalScore}</Text>
       </View>
       <View style={styles.infoRow}>
         <Ionicons name="flame-outline" size={20} color="black" />

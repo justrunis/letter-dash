@@ -1,24 +1,14 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  Button,
-  RefreshControl,
-  DevSettings,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, Button } from "react-native";
 import Board from "../components/Game/Board";
 import Keyboard from "../components/Game/Keyboard";
 import useWordleLogic from "../hooks/useWordleLogic";
 import { Colors } from "../constants/colors";
 import GameEndCard from "../components/DailyGame/GameEndCard";
 import { useSelector } from "react-redux";
-import { useCallback, useState } from "react";
 
 export default function DailyGameScreen({ navigation }) {
   const dailyWord = true;
   const token = useSelector((state) => state.auth.userToken);
-
-  const [refreshing, setRefreshing] = useState(false);
 
   const {
     guesses,
@@ -37,15 +27,6 @@ export default function DailyGameScreen({ navigation }) {
     keyEvaluations,
   } = useWordleLogic(dailyWord); // targetWord, guesses
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    refreshDailyGame();
-    DevSettings.reload();
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
-
   const handleKeyPress = (key) => {
     if (isGameOver) return;
     if (key === "Enter") {
@@ -59,12 +40,7 @@ export default function DailyGameScreen({ navigation }) {
 
   if (!token) {
     return (
-      <ScrollView
-        contentContainerStyle={styles.centeredContainer}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
+      <ScrollView contentContainerStyle={styles.centeredContainer}>
         <Text style={styles.message}>Please login to play the daily game.</Text>
         <Button
           title="Login"
@@ -77,12 +53,7 @@ export default function DailyGameScreen({ navigation }) {
   }
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
+    <ScrollView contentContainerStyle={styles.container}>
       <Board
         guesses={guesses}
         currentGuess={currentGuess}
@@ -116,6 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 10,
+    backgroundColor: Colors.primary100,
   },
   message: {
     fontSize: 20,

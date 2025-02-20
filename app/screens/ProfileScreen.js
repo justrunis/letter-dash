@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Button, TextInput, StyleSheet } from "react-native";
+import { View, Image, Button, TextInput, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { login, register, logout } from "../store/slices/authSlice";
 import { resetDailyGuesses } from "../store/slices/dailyGuessSlice";
@@ -79,6 +79,12 @@ export default function ProfileScreen() {
         </View>
       ) : (
         <>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require("../assets/icon.png")}
+              style={styles.image}
+            />
+          </View>
           {isRegistering && (
             <TextInput
               placeholder="Email"
@@ -153,7 +159,19 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: Colors.gray700,
     borderRadius: 5,
+    color: Colors.text,
+    backgroundColor: Colors.gray,
+  },
+  imageContainer: {
+    alignItems: "center",
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    marginBottom: 20,
+    aspectRatio: 3 / 2,
+    resizeMode: "contain",
   },
 });

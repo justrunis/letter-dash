@@ -7,7 +7,6 @@ const tokenExpiryTime = "7d";
 
 export const createUser = async (req, res, next) => {
   try {
-    console.log(req.body);
     const { username, email, password, passwordRepeat } = req.body;
 
     if (!username || !email || !password || !passwordRepeat) {

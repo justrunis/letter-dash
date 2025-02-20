@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   Button,
+  RefreshControl,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
@@ -16,6 +17,7 @@ import { Colors } from "../../constants/colors";
 
 export default function ProfileCard({ onLogout }) {
   const token = useSelector((state) => state.auth.userToken);
+  const [refreshing, setRefreshing] = useState(false);
   const [userData, setUserData] = useState({
     username: "",
     email: "",
@@ -23,6 +25,12 @@ export default function ProfileCard({ onLogout }) {
     createdAt: "",
     updatedAt: "",
     achievements: [],
+  });
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchUserData();
+    setRefreshing(false);
   });
 
   async function fetchUserData() {
@@ -65,7 +73,12 @@ export default function ProfileCard({ onLogout }) {
   }, [token]);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View style={styles.header}>
         <Image
           source={{

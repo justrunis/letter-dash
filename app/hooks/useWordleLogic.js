@@ -89,6 +89,7 @@ export default function useWordleLogic(dailyWord) {
 
   useEffect(() => {
     setKeyEvaluations({});
+    setIsGameOver(false);
     const fetchDataAndEvaluate = async () => {
       if (dailyWord) {
         if (token) {
@@ -213,6 +214,9 @@ export default function useWordleLogic(dailyWord) {
       return;
     }
     const data = await response.json();
+    if (data.guess.isCorrect) {
+      setIsGameOver(true);
+    }
   };
 
   const getUsersTodayGuesses = async () => {

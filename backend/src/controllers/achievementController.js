@@ -2,9 +2,7 @@ import Achievement from "../models/achievement.js";
 
 export const getAchievements = async (req, res, next) => {
   try {
-    console.log("Fetching achievements...");
     const achievements = await Achievement.find();
-    console.log("Fetched achievements:", achievements);
     res.status(200).json(achievements);
   } catch (error) {
     if (!error.statusCode) {

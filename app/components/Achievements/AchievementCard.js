@@ -2,7 +2,12 @@ import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/colors";
 
-export default function AchievementCard({ title, description, icon }) {
+export default function AchievementCard({
+  title,
+  description,
+  icon,
+  achievementDate,
+}) {
   return (
     <View style={styles.card}>
       <View style={styles.iconContainer}>
@@ -11,6 +16,9 @@ export default function AchievementCard({ title, description, icon }) {
       <View style={styles.textContainer}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
+        {achievementDate && (
+          <Text style={styles.date}>Unlocked on: {achievementDate}</Text>
+        )}
       </View>
     </View>
   );
@@ -48,5 +56,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.textSecondary,
     flexShrink: 1,
+  },
+  date: {
+    fontSize: 11,
+    color: Colors.textSecondary,
+    fontWeight: "bold",
   },
 });

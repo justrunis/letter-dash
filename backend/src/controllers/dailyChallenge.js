@@ -17,3 +17,15 @@ export const getDailyChallenge = async (req, res) => {
     next(error);
   }
 };
+
+export const getAllDailyChallenges = async (req, res) => {
+  try {
+    const dailyChallenges = await DailyChallenge.find().sort({ date: -1 });
+    res.status(200).json(dailyChallenges);
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};

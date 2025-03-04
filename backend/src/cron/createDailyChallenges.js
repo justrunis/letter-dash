@@ -44,6 +44,6 @@ export async function createDailyChallenges() {
       );
     }
   } catch (error) {
-    console.error("Error creating daily challenges:", error);
+    console.error("Error creating daily challenges: ", error);
   }
 }

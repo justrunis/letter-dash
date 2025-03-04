@@ -5,6 +5,7 @@ import { connectDB } from "./util/database.js";
 import bodyParser from "body-parser";
 import cron from "node-cron";
 import { createDailyChallenges } from "./cron/createDailyChallenges.js";
+import { recalculateStreaks } from "./cron/recalculateStreaks.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -37,7 +38,10 @@ app.use("/achievement", achievementRoutes);
 
 // Schedule the cron job to run daily
 createDailyChallenges();
+recalculateStreaks();
+
 cron.schedule("0 0 * * *", createDailyChallenges);
+cron.schedule("0 0 * * *", recalculateStreaks);
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;

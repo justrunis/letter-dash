@@ -2,6 +2,7 @@ import Guess from "../models/guess.js";
 import User from "../models/user.js";
 import DailyChallenge from "../models/dailyChallenge.js";
 import mongoose from "mongoose";
+import { checkAchievements } from "../util/lib.js";
 
 export const submitGuess = async (req, res, next) => {
   try {
@@ -61,6 +62,7 @@ export const submitGuess = async (req, res, next) => {
         }
 
         user.dayStreak = updatedStreak;
+        await checkAchievements(user, newGuess);
         await user.save();
       }
     }
@@ -70,8 +72,10 @@ export const submitGuess = async (req, res, next) => {
       guess: newGuess,
     });
   } catch (error) {
-    console.error("Error submitting guess:", error);
-    res.status(500).json({ message: "Server error" });
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
   }
 };
 

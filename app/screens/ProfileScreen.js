@@ -6,6 +6,7 @@ import { resetDailyGuesses } from "../store/slices/dailyGuessSlice";
 import { Colors } from "../constants/colors";
 import { Toast } from "toastify-react-native";
 import ProfileCard from "../components/Profile/ProfileCard";
+import LoadingIndicator from "../components/UI/LoadingIndicator";
 
 export default function ProfileScreen() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,8 @@ export default function ProfileScreen() {
     passwordRepeat: "",
   });
   const [isRegistering, setIsRegistering] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const dispatch = useDispatch();
   const { isAuthenticated, email, username, isRegistered, userToken } =
     useSelector((state) => state.auth);
@@ -24,23 +27,40 @@ export default function ProfileScreen() {
   };
 
   const handleLogin = async () => {
-    const URL = process.env.EXPO_PUBLIC_API_URL + "/auth/login";
-    const response = await fetch(URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      Toast.error(data.message);
-      return;
+    setLoading(true);
+    try {
+      const URL = process.env.EXPO_PUBLIC_API_URL + "/auth/login";
+      const response = await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Failed to fetch achievements.";
+        try {
+          const errorData = await response.json();
+          if (errorData.message) {
+            errorMessage = errorData.message;
+          }
+        } catch (jsonError) {
+          errorMessage = `Server error: ${response.status}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      dispatch(login({ userToken: data.token, ...formData }));
+      dispatch(resetDailyGuesses());
+      Toast.success(data.message);
+      setFormData({});
+    } catch (error) {
+      Toast.error(error.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
-    dispatch(login({ userToken: data.token, ...formData }));
-    dispatch(resetDailyGuesses());
-    Toast.success(data.message);
-    setFormData({});
   };
 
   const handleLogout = () => {
@@ -48,22 +68,40 @@ export default function ProfileScreen() {
   };
 
   const handleRegister = async () => {
-    const URL = process.env.EXPO_PUBLIC_API_URL + "/auth/register";
-    const response = await fetch(URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      Toast.error(data.message);
-      return;
+    setLoading(true);
+    try {
+      const URL = process.env.EXPO_PUBLIC_API_URL + "/auth/register";
+      const response = await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Failed to fetch achievements.";
+        try {
+          const errorData = await response.json();
+          if (errorData.message) {
+            errorMessage = errorData.message;
+          }
+        } catch (jsonError) {
+          errorMessage = `Server error: ${response.status}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+
+      dispatch(register({ formData }));
+      Toast.success(data.message);
+      setFormData({});
+    } catch (error) {
+      Toast.error(error.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
-    dispatch(register({ formData }));
-    Toast.success(data.message);
-    setFormData({});
   };
 
   const toggle = () => {
@@ -79,56 +117,64 @@ export default function ProfileScreen() {
         </View>
       ) : (
         <>
-          <View style={styles.imageContainer}>
-            <Image
-              source={require("../assets/icon.png")}
-              style={styles.image}
-            />
-          </View>
-          {isRegistering && (
-            <TextInput
-              placeholder="Email"
-              value={formData.email}
-              onChangeText={(value) => handleInputChange("email", value)}
-              style={styles.input}
-            />
+          {loading ? (
+            <LoadingIndicator />
+          ) : (
+            <>
+              <View style={styles.imageContainer}>
+                <Image
+                  source={require("../assets/icon.png")}
+                  style={styles.image}
+                />
+              </View>
+              {isRegistering && (
+                <TextInput
+                  placeholder="Email"
+                  value={formData.email}
+                  onChangeText={(value) => handleInputChange("email", value)}
+                  style={styles.input}
+                />
+              )}
+              <TextInput
+                placeholder="Username"
+                value={formData.username}
+                onChangeText={(value) => handleInputChange("username", value)}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Password"
+                value={formData.password}
+                onChangeText={(value) => handleInputChange("password", value)}
+                secureTextEntry
+                style={styles.input}
+              />
+              {isRegistering && (
+                <TextInput
+                  placeholder="Repeat Password"
+                  value={formData.passwordRepeat}
+                  onChangeText={(value) =>
+                    handleInputChange("passwordRepeat", value)
+                  }
+                  secureTextEntry
+                  style={styles.input}
+                />
+              )}
+              <View style={styles.buttonContainer}>
+                <Button
+                  title={isRegistering ? "Register" : "Login"}
+                  onPress={isRegistering ? handleRegister : handleLogin}
+                  color={Colors.primary500}
+                />
+                <Button
+                  title={
+                    isRegistering ? "Switch to Login" : "Switch to Register"
+                  }
+                  onPress={toggle}
+                  color={Colors.primary500}
+                />
+              </View>
+            </>
           )}
-          <TextInput
-            placeholder="Username"
-            value={formData.username}
-            onChangeText={(value) => handleInputChange("username", value)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Password"
-            value={formData.password}
-            onChangeText={(value) => handleInputChange("password", value)}
-            secureTextEntry
-            style={styles.input}
-          />
-          {isRegistering && (
-            <TextInput
-              placeholder="Repeat Password"
-              value={formData.passwordRepeat}
-              onChangeText={(value) =>
-                handleInputChange("passwordRepeat", value)
-              }
-              secureTextEntry
-              style={styles.input}
-            />
-          )}
-          <View style={styles.buttonContainer}>
-            <Button
-              title={isRegistering ? "Register" : "Login"}
-              onPress={isRegistering ? handleRegister : handleLogin}
-              color={Colors.primary500}
-            />
-            <Button
-              title={isRegistering ? "Switch to Login" : "Switch to Register"}
-              onPress={toggle}
-              color={Colors.primary500}
-            />
-          </View>
         </>
       )}
     </View>

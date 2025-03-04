@@ -16,4 +16,6 @@ export const Colors = {
   grayBorder: "#999999", // Gray border
   text: "#000000", // Black
   error: "#ff0000", // Red
+  errorText: "#ffffff", // White
+  errorBackground: "#ff0000", // Red
 };

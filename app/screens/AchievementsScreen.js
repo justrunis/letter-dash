@@ -9,11 +9,13 @@ import AchievementCard from "../components/Achievements/AchievementCard";
 import { Colors } from "../constants/colors";
 import LoadingIndicator from "../components/UI/LoadingIndicator";
 import { useState, useCallback, useEffect } from "react";
+import ErrorIndicator from "../components/UI/ErrorIndicator";
 
 export default function AchievementsScreen() {
   const [achievements, setAchievements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchAchievements();
@@ -21,20 +23,28 @@ export default function AchievementsScreen() {
 
   const fetchAchievements = async () => {
     setLoading(true);
+    setError(null);
     try {
       const URL = process.env.EXPO_PUBLIC_API_URL + "/achievement";
       const response = await fetch(URL, { method: "GET" });
 
       if (!response.ok) {
-        const data = await response.json();
-        Toast.error(data.message);
-        return;
+        let errorMessage = "Failed to fetch achievements.";
+        try {
+          const errorData = await response.json();
+          if (errorData.message) {
+            errorMessage = errorData.message;
+          }
+        } catch (jsonError) {
+          errorMessage = `Server error: ${response.status}`;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
       setAchievements(data);
     } catch (error) {
-      Toast.error("Failed to fetch achievements.");
+      setError(error.message || "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
@@ -49,14 +59,14 @@ export default function AchievementsScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Achievements</Text>
-      {loading ? (
-        <LoadingIndicator />
-      ) : (
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {loading && <LoadingIndicator />}
+        {!loading && error && <ErrorIndicator message={error} />}
+        {!loading && !error && (
           <View style={styles.achievementContainer}>
             {achievements.map((achievement, index) => (
               <AchievementCard
@@ -67,8 +77,8 @@ export default function AchievementsScreen() {
               />
             ))}
           </View>
-        </ScrollView>
-      )}
+        )}
+      </ScrollView>
     </View>
   );
 }

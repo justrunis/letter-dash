@@ -1,22 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ScrollView,
-  Button,
-  RefreshControl,
-  TextInput,
-} from "react-native";
+import { ScrollView, RefreshControl, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { formatDate } from "../../util/helpers";
-import { DEFAULT_AVATAR_IMAGE } from "../../constants/constants";
-import { Colors } from "../../constants/colors";
-import AchievementCard from "../Achievements/AchievementCard";
+import AvatarSection from "./AvatarSection";
+import UserInfoSection from "./UserInfoSection";
+import AchievementsSection from "./AchievementsSection";
+import ActionButtons from "./ActionButtons";
 import LoadingIndicator from "../UI/LoadingIndicator"; // Assuming you have a LoadingIndicator component
+import { Colors } from "../../constants/colors";
 
 export default function ProfileCard({ onLogout }) {
   const token = useSelector((state) => state.auth.userToken);
@@ -107,6 +98,10 @@ export default function ProfileCard({ onLogout }) {
     }
   };
 
+  const handleCancelEdit = () => {
+    setEditing(false);
+  };
+
   // Filter the achievements the user has earned
   const earnedAchievements = userData.achievements
     .map((userAchievement) => {
@@ -139,77 +134,27 @@ export default function ProfileCard({ onLogout }) {
         <LoadingIndicator />
       ) : (
         <>
-          <View style={styles.header}>
-            <Image
-              source={{
-                uri: DEFAULT_AVATAR_IMAGE,
-              }}
-              style={styles.avatar}
-            />
-            {editing ? (
-              <TextInput
-                style={styles.usernameInput}
-                value={userData.username}
-                onChangeText={(text) =>
-                  setUserData((prevData) => ({ ...prevData, username: text }))
-                }
-                autoFocus
-              />
-            ) : (
-              <Text style={styles.username}>{userData.username}</Text>
-            )}
-          </View>
-          <View style={styles.infoRow}>
-            <Ionicons name="mail-outline" size={20} color="black" />
-            <Text style={styles.infoText}>{userData.email}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Ionicons name="flame-outline" size={20} color="black" />
-            <Text style={styles.infoText}>
-              Day Streak: {userData.dayStreak}
-            </Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Ionicons name="calendar-outline" size={20} color="black" />
-            <Text style={styles.infoText}>
-              Member Since: {formatDate(userData.createdAt)}
-            </Text>
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button color={Colors.error} title="Logout" onPress={onLogout} />
-            {editing ? (
-              <Button
-                color={Colors.primary}
-                title="Save"
-                onPress={handleUpdateUsername}
-              />
-            ) : (
-              <Button
-                color={Colors.primary}
-                title="Edit Username"
-                onPress={() => setEditing(true)}
-              />
-            )}
-          </View>
-          <View style={styles.achievementsContainer}>
-            <Text style={styles.achievement}>Achievements</Text>
-            {earnedAchievements.length > 0 ? (
-              earnedAchievements.map((achievement) => (
-                <View style={styles.achievementContainer} key={achievement._id}>
-                  <AchievementCard
-                    title={achievement.title}
-                    description={achievement.description}
-                    icon={achievement.icon}
-                    achievementDate={formatDate(achievement.dateUnlocked)}
-                  />
-                </View>
-              ))
-            ) : (
-              <Text style={styles.noAchievementsText}>
-                No achievements yet.
-              </Text>
-            )}
-          </View>
+          <AvatarSection
+            username={userData.username}
+            editing={editing}
+            setUsername={(text) =>
+              setUserData((prevData) => ({ ...prevData, username: text }))
+            }
+            onEdit={() => setEditing(true)}
+            onCancel={handleCancelEdit}
+            onSave={handleUpdateUsername}
+          />
+          <UserInfoSection
+            email={userData.email}
+            dayStreak={userData.dayStreak}
+            createdAt={userData.createdAt}
+          />
+          <AchievementsSection earnedAchievements={earnedAchievements} />
+          <ActionButtons
+            onLogout={onLogout}
+            onEdit={handleUpdateUsername}
+            editing={editing}
+          />
         </>
       )}
     </ScrollView>
@@ -220,67 +165,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.primary400,
     padding: 20,
-    marginVertical: 10,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
-  },
-  username: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  usernameInput: {
-    fontSize: 24,
-    fontWeight: "bold",
-    borderBottomWidth: 1,
-    width: "80%",
-    textAlign: "center",
-  },
-  infoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  infoText: {
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  achievement: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 5,
-    textAlign: "center",
-  },
-  achievementContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  noAchievementsText: {
-    fontSize: 16,
-    marginLeft: 30,
-    fontStyle: "italic",
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 10,
-    width: "100%",
-    marginVertical: 10,
+    borderRadius: 8,
   },
 });

@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   },
   leaderboardContainer: {
     width: "100%",
-    backgroundColor: Colors.primary500,
+    backgroundColor: Colors.primary400,
     borderRadius: 15,
     paddingVertical: 10,
     paddingHorizontal: 15,

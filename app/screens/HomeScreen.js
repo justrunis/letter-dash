@@ -55,6 +55,7 @@ export default function HomeScreen({ navigation }) {
           onPress={() => {
             navigation.navigate("Game");
           }}
+          color={Colors.secondary500}
         />
       </View>
     </ScrollView>

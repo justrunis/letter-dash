@@ -1,14 +1,44 @@
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Pressable, Text, StyleSheet, Animated } from "react-native";
+import { useState } from "react";
 import { Colors } from "../../constants/colors";
 
-export default function Button({ children, onPress }) {
+export default function Button({
+  children,
+  onPress,
+  backgroundColor = Colors.primary500,
+  color = Colors.text,
+}) {
+  const [scale] = useState(new Animated.Value(1));
+
+  const handlePressIn = () => {
+    Animated.spring(scale, {
+      toValue: 0.9,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scale, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
-    <Pressable
-      style={({ pressed }) => [styles.button, pressed && styles.pressed]}
-      onPress={onPress}
-    >
-      <Text style={styles.button}>{children}</Text>
-    </Pressable>
+    <Animated.View style={{ transform: [{ scale }] }}>
+      <Pressable
+        style={({ pressed }) => [
+          styles.button,
+          { backgroundColor },
+          pressed && styles.pressed,
+        ]}
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
+        <Text style={[styles.text, { color }]}>{children}</Text>
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -17,7 +47,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     margin: 12,
-    backgroundColor: Colors.primary800,
     elevation: 2,
     shadowColor: "black",
     shadowOpacity: 0.15,
@@ -31,6 +60,5 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     fontSize: 16,
-    color: Colors.primary50,
   },
 });

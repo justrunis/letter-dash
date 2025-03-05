@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { Colors } from "../../constants/colors";
 
 export default function LetterBox({ letter, evaluation }) {
-  let backgroundColor = Colors.gray;
+  let backgroundColor = Colors.defaultKey;
 
   if (evaluation === "correct") backgroundColor = Colors.correct;
   else if (evaluation === "present") backgroundColor = Colors.present;

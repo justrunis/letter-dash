@@ -1,14 +1,8 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 import { Colors } from "../constants/colors";
 import ClueRow from "../components/Home/ClueRow";
+import SectionWithButtons from "../components/Home/SectionWithButtons";
 
 export default function HomeScreen({ navigation }) {
   const clues = [
@@ -20,15 +14,18 @@ export default function HomeScreen({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Welcome to Letter Dash!</Text>
+
       <View style={styles.imageContainer}>
         <Image source={require("../assets/icon.png")} style={styles.image} />
       </View>
+
       <Text style={styles.description}>
         In Letter Dash, your goal is to guess the hidden five-letter word within
-        six attempts. Each guess provides feedback:
+        six attempts. Each guess provides feedback as you try to guess the
+        correct word:
       </Text>
 
-      <View>
+      <View style={styles.clueContainer}>
         {clues.map((clue, index) => (
           <ClueRow
             key={index}
@@ -37,27 +34,82 @@ export default function HomeScreen({ navigation }) {
           />
         ))}
       </View>
-      <Text style={styles.sectionTitle}>Tips and Strategies</Text>
-      <Text style={styles.description}>
-        - Start with a word that includes common vowels and consonants to
-        maximize information from your first guess.{"\n"}- Pay attention to the
-        color feedback to deduce letter positions and exclusions.{"\n"}- Avoid
-        repeating letters that have been marked as absent.{"\n"}- Practice
-        regularly to improve your word-guessing skills.
-      </Text>
-      <Text style={styles.sectionTitle}>Daily Challenges</Text>
-      <Text style={styles.description}>
-        Play daily puzzles and unlock achievements to track your progress.
-      </Text>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Start Game"
-          onPress={() => {
-            navigation.navigate("Game");
-          }}
-          color={Colors.secondary500}
-        />
-      </View>
+
+      <SectionWithButtons
+        title="Tips and Strategies"
+        description={
+          <>
+            <Text style={styles.bold}>
+              - Start with a word that includes common vowels and consonants
+            </Text>
+            {"\n"}
+            <Text style={styles.bold}>
+              - Pay attention to the color feedback to deduce letter positions
+            </Text>
+            {"\n"}
+            <Text style={styles.bold}>
+              - Avoid repeating letters that have been marked as absent
+            </Text>
+            {"\n"}
+            <Text style={styles.bold}>
+              - Practice regularly to improve your word-guessing skills
+            </Text>
+          </>
+        }
+        buttons={[]}
+      />
+
+      <SectionWithButtons
+        title="Profile"
+        description="Create a profile to track your progress and unlock achievements."
+        buttons={[
+          {
+            onPress: () => navigation.navigate("Profile"),
+            backgroundColor: Colors.primary500,
+            color: Colors.white,
+            text: "Create/View Profile",
+          },
+        ]}
+      />
+
+      <SectionWithButtons
+        title="Daily Challenges"
+        description="Play daily puzzles and unlock achievements to track your progress."
+        buttons={[
+          {
+            onPress: () => navigation.navigate("DailyGame"),
+            backgroundColor: Colors.primary500,
+            color: Colors.white,
+            text: "Start Daily Game",
+          },
+        ]}
+      />
+
+      <SectionWithButtons
+        title="Achievements"
+        description="Unlock achievements to track your progress and show off your skills."
+        buttons={[
+          {
+            onPress: () => navigation.navigate("Achievements"),
+            backgroundColor: Colors.primary500,
+            color: Colors.white,
+            text: "View Achievements",
+          },
+        ]}
+      />
+
+      <SectionWithButtons
+        title="Leaderboard"
+        description="Compete with other players and show off your word-guessing skills."
+        buttons={[
+          {
+            onPress: () => navigation.navigate("Leaderboard"),
+            backgroundColor: Colors.primary500,
+            color: Colors.white,
+            text: "View Leaderboard",
+          },
+        ]}
+      />
     </ScrollView>
   );
 }
@@ -67,10 +119,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.primary100,
     paddingBottom: 40,
-    padding: 20,
+    paddingHorizontal: 20,
   },
   imageContainer: {
     alignItems: "center",
+    marginBottom: 20,
   },
   image: {
     width: "100%",
@@ -90,15 +143,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.text,
     marginBottom: 20,
+    lineHeight: 24,
   },
-  sectionTitle: {
-    fontSize: 20,
+  clueContainer: {
+    marginBottom: 20,
+  },
+  bold: {
     fontWeight: "bold",
-    color: Colors.primary700,
-    marginBottom: 10,
-  },
-  buttonContainer: {
-    marginBottom: 40,
-    alignItems: "center",
   },
 });

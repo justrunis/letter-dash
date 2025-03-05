@@ -33,8 +33,6 @@ export const submitGuess = async (req, res, next) => {
       isCorrect,
     });
 
-    await newGuess.save();
-
     if (isCorrect) {
       const user = await User.findById(userId);
 
@@ -54,9 +52,12 @@ export const submitGuess = async (req, res, next) => {
 
           const dayDifference = (today - lastGuessDate) / (1000 * 60 * 60 * 24);
 
-          if (dayDifference === 1) {
+          console.log("DAY DIFFERENCE");
+          console.log(dayDifference);
+
+          if (dayDifference == 1) {
             updatedStreak = user.dayStreak + 1;
-          } else if (dayDifference > 1) {
+          } else if (dayDifference >= 1) {
             updatedStreak = 1;
           }
         }
@@ -66,6 +67,8 @@ export const submitGuess = async (req, res, next) => {
         await user.save();
       }
     }
+
+    await newGuess.save();
 
     res.status(201).json({
       message: "Guess submitted successfully.",

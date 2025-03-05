@@ -27,6 +27,7 @@ export const Colors = {
   accent700: "#e65100", // Very dark orange
 
   gray700: "#37474f", // Dark gray
+  white: "#ffffff", // White
   correct: "#2ea04f", // Green
   present: "#ffc300", // Yellow
   absent: "#808080", // Gray

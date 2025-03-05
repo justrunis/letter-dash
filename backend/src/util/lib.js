@@ -18,12 +18,6 @@ export const checkAchievements = async (user, newGuess) => {
           earned = true;
         }
         break;
-      case "Quick Thinker":
-        // Solving the puzzle under 2 minutes
-        if (newGuess.timeTaken <= 120000) {
-          earned = true;
-        }
-        break;
       case "Word Sleuth":
         // No incorrect guesses for this puzzle
         const allUserGuessesForToday = await Guess.find({
@@ -44,18 +38,28 @@ export const checkAchievements = async (user, newGuess) => {
         }
         break;
       case "Letter Enthusiast":
-        // Solve 500 puzzles
-        const allCorrectUsersGuesses = await Guess.find({
+        // Correcly guess 500 puzzles
+        let allUserGuesses = await Guess.find({
           userId: user.id,
           isCorrect: true,
         });
-        if (allCorrectUsersGuesses.length >= 500) {
+        if (allUserGuesses.length >= 500) {
           earned = true;
         }
         break;
       case "Streak Master":
         // Achieve a 7-day streak
         if (user.dayStreak >= 7) {
+          earned = true;
+        }
+        break;
+      case "Vocabulary Virtuoso":
+        // Solve 100 puzzles
+        let allUserGuesses2 = await Guess.find({
+          userId: user.id,
+          isCorrect: true,
+        });
+        if (allUserGuesses2.length >= 100) {
           earned = true;
         }
         break;

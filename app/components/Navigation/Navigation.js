@@ -129,15 +129,17 @@ function CustomDrawerContent(props) {
         <View style={styles.drawerHeader}>
           <Text style={styles.drawerHeaderText}>Welcome to Letter Dash!</Text>
 
-          <View style={styles.container}>
-            <Image
-              source={{
-                uri: DEFAULT_AVATAR_IMAGE,
-              }}
-              style={styles.image}
-            />
-            <Text style={styles.text}>{username}</Text>
-          </View>
+          {!isTokenExpired(token) && (
+            <View style={styles.container}>
+              <Image
+                source={{
+                  uri: DEFAULT_AVATAR_IMAGE,
+                }}
+                style={styles.image}
+              />
+              <Text style={styles.text}>{username}</Text>
+            </View>
+          )}
         </View>
       )}
       <DrawerItemList {...props} />

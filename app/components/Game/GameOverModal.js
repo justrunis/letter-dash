@@ -1,6 +1,7 @@
 import React from "react";
-import { Modal, View, Text, Button, StyleSheet } from "react-native";
+import { Modal, View, Text, StyleSheet } from "react-native";
 import { Colors } from "../../constants/colors";
+import Button from "../UI/Button";
 
 export default function GameOverModal({
   onRestart,
@@ -31,10 +32,12 @@ export default function GameOverModal({
         )}
         <View style={styles.buttonContainer}>
           <Button
-            title="Restart"
             onPress={onRestart}
-            color={Colors.accent500}
-          />
+            backgroundColor={Colors.accent500}
+            color={Colors.text}
+          >
+            Restart
+          </Button>
         </View>
       </View>
     </View>

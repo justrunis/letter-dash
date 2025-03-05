@@ -24,6 +24,7 @@ export default function ProfileCard({ navigation, onLogout }) {
     username: "",
     email: "",
     dayStreak: 0,
+    totalCorrectGuesses: 0,
     createdAt: "",
     achievements: [],
   });
@@ -170,6 +171,7 @@ export default function ProfileCard({ navigation, onLogout }) {
           <UserInfoSection
             email={userData.email}
             dayStreak={userData.dayStreak}
+            totalCorrectGuesses={userData.totalCorrectGuesses}
             createdAt={userData.createdAt}
           />
           <AchievementsSection earnedAchievements={earnedAchievements} />

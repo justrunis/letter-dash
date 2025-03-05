@@ -21,7 +21,7 @@ const userSchema = new Schema(
       unique: true,
       trim: true,
     },
-    totalScore: {
+    totalCorrectGuesses: {
       type: Number,
       default: 0,
     },

@@ -35,6 +35,7 @@ export const submitGuess = async (req, res, next) => {
 
     if (isCorrect) {
       const user = await User.findById(userId);
+      user.totalCorrectGuesses += 1;
 
       if (user) {
         const lastCorrectGuess = await Guess.findOne({

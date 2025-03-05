@@ -5,6 +5,7 @@ import useWordleLogic from "../hooks/useWordleLogic";
 import { Colors } from "../constants/colors";
 import GameEndCard from "../components/DailyGame/GameEndCard";
 import { useSelector } from "react-redux";
+import { isTokenExpired } from "../auth/auth";
 
 export default function DailyGameScreen({ navigation }) {
   const dailyWord = true;
@@ -37,6 +38,22 @@ export default function DailyGameScreen({ navigation }) {
       addLetter(key.toLowerCase());
     }
   };
+
+  if (isTokenExpired(token)) {
+    return (
+      <ScrollView contentContainerStyle={styles.centeredContainer}>
+        <Text style={styles.message}>
+          Your session has expired. Please log in again.
+        </Text>
+        <Button
+          title="Login"
+          onPress={() => {
+            navigation.navigate("Profile");
+          }}
+        />
+      </ScrollView>
+    );
+  }
 
   if (!token) {
     return (
@@ -92,6 +109,7 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 20,
     fontWeight: "bold",
+    textAlign: "center",
     color: Colors.text,
   },
 });

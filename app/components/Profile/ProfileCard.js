@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { ScrollView, RefreshControl, StyleSheet } from "react-native";
+import {
+  ScrollView,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  Button,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { Toast } from "toastify-react-native";
 import AvatarSection from "./AvatarSection";
@@ -8,8 +14,9 @@ import AchievementsSection from "./AchievementsSection";
 import ActionButtons from "./ActionButtons";
 import LoadingIndicator from "../UI/LoadingIndicator"; // Assuming you have a LoadingIndicator component
 import { Colors } from "../../constants/colors";
+import { isTokenExpired } from "../../auth/auth";
 
-export default function ProfileCard({ onLogout }) {
+export default function ProfileCard({ navigation, onLogout }) {
   const token = useSelector((state) => state.auth.userToken);
   const [refreshing, setRefreshing] = useState(false);
   const [achievements, setAchievements] = useState([]);
@@ -88,7 +95,7 @@ export default function ProfileCard({ onLogout }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message);
+        Toast.error(data.message);
       }
 
       setEditing(false);
@@ -122,6 +129,22 @@ export default function ProfileCard({ onLogout }) {
       fetchData();
     }
   }, [token]);
+
+  if (isTokenExpired(token)) {
+    return (
+      <ScrollView contentContainerStyle={styles.centeredContainer}>
+        <Text style={styles.message}>
+          Your session has expired. Please log in again.
+        </Text>
+        <Button
+          title="Login"
+          onPress={() => {
+            navigation.navigate("Profile");
+          }}
+        />
+      </ScrollView>
+    );
+  }
 
   return (
     <ScrollView
@@ -166,5 +189,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary400,
     padding: 20,
     borderRadius: 8,
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: Colors.primary100,
+  },
+  message: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: Colors.text,
   },
 });

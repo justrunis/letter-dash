@@ -45,14 +45,11 @@ export default function useWordleLogic(dailyWord) {
         },
       });
       if (!response.ok) {
-        const data = await response.json();
-        Toast.error(data.message);
         return;
       }
       const data = await response.json();
       console.log("The daily word is: " + data.word);
       setTargetWord(data.word);
-      // setWordLength(data.word.length);
     } catch (error) {
       Toast.error("Failed to fetch the daily word.");
     }
@@ -68,12 +65,10 @@ export default function useWordleLogic(dailyWord) {
       if (data && data.length > 0) {
         const word = data[0].toLowerCase();
         setTargetWord(word);
-        // setWordLength(word.length);
       }
     } catch (error) {
       // Fallback word in case of an error
       setTargetWord("donut");
-      // setWordLength("donut".length);
     }
   };
 
@@ -318,6 +313,6 @@ export default function useWordleLogic(dailyWord) {
     attemptsCount, // number of attempts when game is won
     timeTaken, // time taken in seconds when game is won
     score, // computed score based on attempts and speed
-    keyEvaluations,
+    keyEvaluations, // key evaluations for the current guess
   };
 }

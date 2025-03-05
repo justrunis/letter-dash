@@ -8,7 +8,7 @@ import { Toast } from "toastify-react-native";
 import ProfileCard from "../components/Profile/ProfileCard";
 import LoadingIndicator from "../components/UI/LoadingIndicator";
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -113,7 +113,7 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       {isAuthenticated ? (
         <View style={styles.profileContainer}>
-          <ProfileCard onLogout={handleLogout} />
+          <ProfileCard navigation={navigation} onLogout={handleLogout} />
         </View>
       ) : (
         <>

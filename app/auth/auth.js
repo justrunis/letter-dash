@@ -6,6 +6,17 @@ export function parseJwt(token) {
   }
 }
 
+export function isTokenExpired(token) {
+  if (token === undefined || token === null) {
+    return true;
+  }
+  const decodedToken = parseJwt(token);
+  if (decodedToken.exp < Date.now() / 1000) {
+    return true;
+  }
+  return false;
+}
+
 export function getUserUsername(token) {
   if (token === undefined || token === null) {
     return;

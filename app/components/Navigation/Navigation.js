@@ -15,24 +15,10 @@ import LeaderboardScreen from "../../screens/LeaderboardScreen";
 import ProfileScreen from "../../screens/ProfileScreen";
 import AchievementsScreen from "../../screens/AchievementsScreen";
 import { DEFAULT_AVATAR_IMAGE } from "../../constants/constants";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { isTokenExpired } from "../../auth/auth";
-import { useEffect } from "react";
-import { logout } from "../../store/slices/authSlice";
-import { Toast } from "toastify-react-native";
 
 export default function Navigation() {
-  const token = useSelector((state) => state.auth.userToken);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (isTokenExpired(token)) {
-      dispatch(logout());
-      Toast.warn("Your session has expired. Please log in again.");
-      console.log("Token expired");
-    }
-  }, []);
-
   const Drawer = createDrawerNavigator();
 
   return (

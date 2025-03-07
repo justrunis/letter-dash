@@ -53,6 +53,18 @@ Welcome to **Letter Dash**, a word-guessing game built using **React Native**! T
   npm install
   npm start
   ```
+
+- **Add .env file to the frontend with these values**
+
+  ```bash
+  EXPO_PUBLIC_API_URL=BACKEND_URL
+  ```
+  For local development with expo use this URL
+
+  ```bash
+  http://10.0.2.2:3000
+  ```
+
 - **Open new terminal and start the app.**
 
   ```bash
@@ -88,9 +100,8 @@ Welcome to **Letter Dash**, a word-guessing game built using **React Native**! T
 
 ## Tech Stack
 
-- **React Native:** A framework for building native apps using React.
-- **Node.Js:** A Framework for building server side applications using Javascript
-- **Expo:** A framework and platform for universal React applications.
-- **MongoDB:** Database for storing user data and game progress.
-- **Mongoose:** ODM (Object Data Modeling) library for MongoDB, used for schema management and database operations.
+- [**React Native:**](https://reactnative.dev/) A framework for building native apps for Android, iOS using React.
+- [**Node.Js:**](https://nodejs.org/en) A JavaScript runtime environment that lets developers create servers, web apps, command line tools and scripts.
+- [**Expo:**](https://expo.dev/) A framework and platform used to create universal native apps with React that run on Android, iOS, and the web.
+- [**MongoDB:**](https://www.mongodb.com/) Database for storing user data and game progress.
 

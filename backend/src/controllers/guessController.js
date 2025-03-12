@@ -53,9 +53,6 @@ export const submitGuess = async (req, res, next) => {
 
           const dayDifference = (today - lastGuessDate) / (1000 * 60 * 60 * 24);
 
-          console.log("DAY DIFFERENCE");
-          console.log(dayDifference);
-
           if (dayDifference == 1) {
             updatedStreak = user.dayStreak + 1;
           } else if (dayDifference >= 1) {

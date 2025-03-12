@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, RefreshControl } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import { Colors } from "../constants/colors";
 import { useState, useEffect, useCallback } from "react";
 
@@ -30,8 +30,9 @@ export default function LeaderboardScreen() {
 
   const renderItem = ({ item }) => (
     <View style={styles.row}>
-      <Text style={[styles.text, styles.username]}>{item.username}</Text>
-      <Text style={[styles.text, styles.dayStreak]}>{item.dayStreak}</Text>
+      <Text style={styles.username}>{item.username}</Text>
+      <Text style={styles.columnValue}>{item.totalCorrectGuesses}</Text>
+      <Text style={styles.columnValue}>{item.dayStreak}</Text>
     </View>
   );
 
@@ -40,8 +41,9 @@ export default function LeaderboardScreen() {
       <Text style={styles.title}>Leaderboard</Text>
       <View style={styles.leaderboardContainer}>
         <View style={styles.header}>
-          <Text style={[styles.text, styles.headerName]}>Name</Text>
-          <Text style={[styles.text, styles.headerDayStreak]}>Days Streak</Text>
+          <Text style={styles.headerName}>Name</Text>
+          <Text style={styles.headerColumn}>Total Correct</Text>
+          <Text style={styles.headerColumn}>Days Streak</Text>
         </View>
 
         <FlatList
@@ -90,35 +92,47 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.primary800,
+    paddingHorizontal: 10,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.primary700,
+    paddingHorizontal: 10,
   },
   text: {
     color: Colors.text,
     fontSize: 16,
   },
   headerName: {
-    width: "60%",
-    textAlign: "left",
+    flex: 2,
+    textAlign: "start",
     color: Colors.accent500,
   },
-  headerDayStreak: {
-    width: "40%",
-    textAlign: "right",
+  headerColumn: {
+    flex: 1,
+    textAlign: "center",
     color: Colors.accent500,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.primary400,
   },
   username: {
-    width: "60%",
+    flex: 2,
     textAlign: "left",
   },
+  columnValue: {
+    flex: 1,
+    textAlign: "center",
+  },
+  totalCorrectGuesses: {
+    flex: 1,
+    textAlign: "center",
+  },
   dayStreak: {
-    width: "40%",
-    textAlign: "right",
+    flex: 1,
+    textAlign: "center",
   },
   emptyText: {
     textAlign: "center",

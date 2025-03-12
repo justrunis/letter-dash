@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
